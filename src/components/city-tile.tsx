@@ -10,12 +10,26 @@ interface CityTileProps {
 }
 
 export function CityTile({ tile, position }: CityTileProps) {
-  const meshRef = useRef<Mesh>(null)
+  const grassMeshRef = useRef<Mesh>(null)
+  const buildingMeshRef = useRef<Mesh>(null)
 
   return (
-    <mesh ref={meshRef} position={position}>
-      <boxGeometry args={[1, 1, 1]} />
-      <meshLambertMaterial color={0x00aa00} />
-    </mesh>
+    <group>
+     
+      <mesh ref={grassMeshRef} position={[position[0], -0.5, position[2]]}>
+        <boxGeometry args={[1, 1, 1]} />
+      
+        <meshLambertMaterial color={0x00aa00} /> 
+      </mesh>
+
+    
+      {tile.building === "building" && (
+        <mesh ref={buildingMeshRef} position={[position[0], 0.5, position[2]]}>
+          <boxGeometry args={[1, 1, 1]} />
+        
+          <meshLambertMaterial color={0x777777} /> 
+        </mesh>
+      )}
+    </group>
   )
 }
