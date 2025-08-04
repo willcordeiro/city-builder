@@ -1,53 +1,51 @@
-"use client"
+"use client";
 
-import { Canvas } from "@react-three/fiber"
-import { OrbitControls, Environment } from "@react-three/drei"
-import { Suspense } from "react"
+import { Canvas } from "@react-three/fiber";
+import { OrbitControls } from "@react-three/drei";
+import { Suspense } from "react";
+import { CityGrid } from "@/components/city-grid";
 
-function Box() {
-  return (
-    <mesh position={[0, 0, 0]}>
-      <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial color="orange" />
-    </mesh>
-  )
-}
-
-function Sphere() {
-  return (
-    <mesh position={[2, 0, 0]}>
-      <sphereGeometry args={[0.5, 32, 32]} />
-      <meshStandardMaterial color="hotpink" />
-    </mesh>
-  )
-}
-
-function Scene() {
+export default function Home() {
   return (
     <>
-      <ambientLight intensity={0.5} />
-      <pointLight position={[10, 10, 10]} />
-      <Box />
-      <Sphere />
-      <OrbitControls enablePan={true} enableZoom={true} enableRotate={true} />
-      <Environment preset="sunset" />
-    </>
-  )
-}
-
-export default function ThreeScene() {
-  return (
-    <div className="w-full h-screen bg-gray-900">
-      <div className="absolute top-4 left-4 z-10 text-white">
-        <h1 className="text-2xl font-bold mb-2">Next.js + Three.js Starter</h1>
-        <p className="text-sm opacity-75">Click and drag to rotate • Scroll to zoom</p>
-      </div>
-
-      <Canvas camera={{ position: [3, 3, 3], fov: 75 }}>
+      <Canvas
+        camera={{ position: [20, 20, 20], fov: 60 }}
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100vw",
+          height: "100vh",
+          background: "#777777",
+        }}
+      >
         <Suspense fallback={null}>
-          <Scene />
+          <CityGrid size={10} />
+          <ambientLight color={0xffffff} intensity={0.2} />
+
+          <directionalLight
+            color={0xffffff}
+            intensity={0.3}
+            position={[0, 1, 0]}
+          />
+          <directionalLight
+            color={0xffffff}
+            intensity={0.3}
+            position={[1, 1, 0]}
+          />
+          <directionalLight
+            color={0xffffff}
+            intensity={0.3}
+            position={[0, 1, 1]}
+          />
+
+          <OrbitControls
+            enablePan={true}
+            enableZoom={true}
+            enableRotate={true}
+          />
         </Suspense>
       </Canvas>
-    </div>
-  )
+    </>
+  );
 }
