@@ -1,17 +1,22 @@
 "use client";
 
-import { Canvas, useThree } from "@react-three/fiber";
+import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useState } from "react";
 import { CityGrid } from "@/components/city-grid";
 import { ToolbarSidebar } from "@/components/ToolbarSidebar";
+
 
 export default function Home() {
   const [selectedToolId, setSelectedToolId] = useState<string>("residential");
 
+  function handleToolSelect(id: string) {
+    setSelectedToolId(id);
+  }
+
   return (
     <>
-      <ToolbarSidebar onSelect={setSelectedToolId} />
+      <ToolbarSidebar onSelect={handleToolSelect} selectedId={selectedToolId} />
       <Canvas
         camera={{ position: [25, 10, 25], fov: 60 }}
         style={{
@@ -29,11 +34,9 @@ export default function Home() {
           <directionalLight color={0xffffff} intensity={0.3} position={[0, 1, 0]} />
           <directionalLight color={0xffffff} intensity={0.3} position={[1, 1, 0]} />
           <directionalLight color={0xffffff} intensity={0.3} position={[0, 1, 1]} />
-          <OrbitControls enablePan={true} enableZoom={true} enableRotate={true} />
+          <OrbitControls enablePan enableZoom enableRotate />
         </Suspense>
       </Canvas>
     </>
   );
 }
-
-

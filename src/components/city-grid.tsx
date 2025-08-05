@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState, useEffect } from "react"
+import { useMemo, useState, useEffect, useRef } from "react"
 import { createCity } from "@/utils/city-generator"
 import { CityTile } from "./city-tile"
 import type { City } from "@/types/city"
@@ -13,17 +13,21 @@ interface CityGridProps {
 export function CityGrid({ size, selectedToolId }: CityGridProps) {
   const city: City = useMemo(() => createCity(size), [size]);
   const [tick, setTick] = useState(0);
-
   const [selectedTile, setSelectedTile] = useState<{x: number, y: number} | null>(null);
 
-  // Remove auto-upgrade logic. Now buildings are placed by user interaction.
+  const toolRef = useRef<string | undefined>(selectedToolId);
+
+  useEffect(() => {
+    toolRef.current = selectedToolId;
+  }, [selectedToolId]);
 
   const handleSelectTile = (x: number, y: number) => {
     setSelectedTile({ x, y });
-    // Set buildingId on tile when user clicks
-    if (selectedToolId && city.data[x][y].buildingId !== selectedToolId) {
-      city.data[x][y].buildingId = selectedToolId as City["data"][number][number]["buildingId"];
-      setTick(tick => tick + 1); // force re-render
+    const currentTool = toolRef.current;
+
+    if (currentTool && city.data[x][y].buildingId !== currentTool) {
+      city.data[x][y].buildingId = currentTool as City["data"][number][number]["buildingId"];
+      setTick(t => t + 1);
     }
   };
 
@@ -48,7 +52,7 @@ export function CityGrid({ size, selectedToolId }: CityGridProps) {
       }
     }
     return tileComponents;
-  }, [city, city.data, tick, selectedTile]);
+  }, [city, city.data, tick, selectedTile, selectedToolId]);
 
   return <group>{tiles}</group>;
 }
