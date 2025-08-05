@@ -10,12 +10,6 @@ export default function Home() {
   const [selectedToolId, setSelectedToolId] = useState<string | undefined>("residential")
   const gridSize = 32
 
-/*************  ✨ Windsurf Command ⭐  *************/
-  /**
-   * Handles a tool selection in the toolbar sidebar. If the selected id is not undefined, it is set as the new selected tool id.
-   * @param {string | undefined} id The new tool id to select, or undefined to deselect any tool.
-   */
-/*******  855a3c3d-2f92-41fb-a67e-d6c0c4891061  *******/
   function handleToolSelect(id: string | undefined) {
     setSelectedToolId(id)
   }
