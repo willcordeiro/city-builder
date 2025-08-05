@@ -11,9 +11,10 @@ interface CityTileProps {
   terrainID: string
   selected: boolean
   onSelectTile: (x: number, y: number) => void
+  selectedToolId?: string
 }
 
-export function CityTile({ tile, position, terrainID, selected, onSelectTile }: CityTileProps) {
+export function CityTile({ tile, position, terrainID, selected, onSelectTile, selectedToolId }: CityTileProps) {
   const grassMeshRef = useRef<Mesh>(null)
   const buildingMeshRef = useRef<Mesh>(null)
 

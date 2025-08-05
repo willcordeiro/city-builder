@@ -7,11 +7,13 @@ import type { City } from "@/types/city"
 
 interface CityGridProps {
   size: number
+  selectedToolId?: string
 }
 
-export function CityGrid({ size }: CityGridProps) {
+export function CityGrid({ size, selectedToolId }: CityGridProps) {
   const city: City = useMemo(() => createCity(size), [size]);
   const [tick, setTick] = useState(0);
+
   const [selectedTile, setSelectedTile] = useState<{x: number, y: number} | null>(null);
 
   useEffect(() => {
@@ -67,6 +69,7 @@ export function CityGrid({ size }: CityGridProps) {
             tile={tile}
             position={position}
             terrainID={tile.terrainID}
+            selectedToolId={selectedToolId}
             selected={isSelected}
             onSelectTile={handleSelectTile}
           />
