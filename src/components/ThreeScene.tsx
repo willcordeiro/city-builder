@@ -1,16 +1,22 @@
 "use client"
 
 import { Canvas } from "@react-three/fiber"
-import { OrbitControls, Environment } from "@react-three/drei" // Importe Environment
+import { OrbitControls, Environment } from "@react-three/drei"
 import { Suspense, useState } from "react"
 import { CityGrid } from "@/components/city-grid"
 import { ToolbarSidebar } from "@/components/ToolbarSidebar"
 
 export default function Home() {
-  const [selectedToolId, setSelectedToolId] = useState<string>("residential")
-  const gridSize = 16 // Definindo o tamanho do grid aqui para usar na câmera e luz
+  const [selectedToolId, setSelectedToolId] = useState<string | undefined>("residential")
+  const gridSize = 32
 
-  function handleToolSelect(id: string) {
+/*************  ✨ Windsurf Command ⭐  *************/
+  /**
+   * Handles a tool selection in the toolbar sidebar. If the selected id is not undefined, it is set as the new selected tool id.
+   * @param {string | undefined} id The new tool id to select, or undefined to deselect any tool.
+   */
+/*******  855a3c3d-2f92-41fb-a67e-d6c0c4891061  *******/
+  function handleToolSelect(id: string | undefined) {
     setSelectedToolId(id)
   }
 
@@ -18,8 +24,8 @@ export default function Home() {
     <>
       <ToolbarSidebar onSelect={handleToolSelect} selectedId={selectedToolId} />
       <Canvas
-        shadows // Habilita sombras no Canvas
-        camera={{ position: [gridSize * 1.5, gridSize * 1.5, gridSize * 1.5], fov: 60 }} // Ajusta a posição da câmera
+        shadows
+        camera={{ position: [gridSize * 1.5, gridSize * 1.5, gridSize * 1.5], fov: 60 }}
         style={{
           position: "fixed",
           top: 0,
@@ -32,25 +38,32 @@ export default function Home() {
         <Suspense fallback={null}>
           <CityGrid size={gridSize} selectedToolId={selectedToolId} />
 
-          {/* Luz ambiente para iluminação geral */}
+          {/* Plano invisível que recebe sombra */}
+          <mesh
+            rotation={[-Math.PI / 2, 0, 0]}
+            position={[gridSize / 2 - 0.5, -0.5, gridSize / 2 - 0.5]} // centraliza sob o grid
+            receiveShadow
+          >
+            <planeGeometry args={[gridSize * 3, gridSize * 3]} />
+            <shadowMaterial opacity={0.4} />
+          </mesh>
+
           <ambientLight intensity={0.5} />
 
-          {/* Luz direcional para simular o sol e lançar sombras */}
           <directionalLight
-            position={[gridSize * 0.8, gridSize * 2, gridSize * 0.8]} // Posição da luz (sol)
-            intensity={1.5} // Intensidade da luz
-            castShadow // Habilita a luz para lançar sombras
-            shadow-mapSize-width={2048} // Qualidade da sombra (largura)
-            shadow-mapSize-height={2048} // Qualidade da sombra (altura)
-            shadow-camera-near={0.1} // Perto do frustum da sombra
-            shadow-camera-far={gridSize * 4} // Longe do frustum da sombra
-            shadow-camera-left={-gridSize * 1.2} // Limites do frustum da sombra
+            position={[gridSize * 0.8, gridSize * 2, gridSize * 0.8]}
+            intensity={1.5}
+            castShadow
+            shadow-mapSize-width={2048}
+            shadow-mapSize-height={2048}
+            shadow-camera-near={0.1}
+            shadow-camera-far={gridSize * 4}
+            shadow-camera-left={-gridSize * 1.2}
             shadow-camera-right={gridSize * 1.2}
             shadow-camera-top={gridSize * 1.2}
             shadow-camera-bottom={-gridSize * 1.2}
           />
 
-          {/* Adiciona um ambiente para iluminação mais realista */}
           <Environment preset="city" />
 
           <OrbitControls enablePan enableZoom enableRotate />

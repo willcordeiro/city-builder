@@ -4,6 +4,7 @@ import { useRef } from "react";
 import type { Mesh } from "three";
 import type { Tile } from "@/types/city";
 import assets from "@/utils/assets";
+import { useAsset } from "@/hooks/useAssetManager";
 
 interface CityTileProps {
   tile: Tile;
@@ -17,13 +18,16 @@ interface CityTileProps {
 export function CityTile({
   tile,
   position,
-  terrainID,
   selected,
   onSelectTile,
-  selectedToolId,
 }: CityTileProps) {
   const grassMeshRef = useRef<Mesh>(null);
   const buildingMeshRef = useRef<Mesh>(null);
+
+  const residentialMesh = useAsset("residential");
+  const commercialMesh = useAsset("commercial");
+  const industrialMesh = useAsset("industrial");
+  const roadMesh = useAsset("road");
 
   function handlePointerDown(event: any) {
     event.stopPropagation();
@@ -36,25 +40,26 @@ export function CityTile({
 
   function getColorForBuilding(buildingId: string): number {
     const asset = assets[buildingId];
-    if (!asset) return 0xaaaaaa; // fallback color
-    return parseInt(asset.color.replace("#", "0x"));
+    if (!asset) return 0xaaaaaa;
+    return Number.parseInt(asset.color.replace("#", "0x"));
   }
 
-  const baseHeight = 0.1; // Altura do terreno
-  const buildingHeight = tile.building ? tile.building.height : baseHeight;
+  function getAdjustedPosition(
+    base: [number, number, number],
+    offset: [number, number, number]
+  ): [number, number, number] {
+    return [base[0] + offset[0], base[1] + offset[1], base[2] + offset[2]];
+  }
 
   return (
     <group>
       {/* Terreno */}
       <mesh
         ref={grassMeshRef}
-        position={[
-          position[assets.grass.position[0]],
-          assets.grass.position[1],
-          position[assets.grass.position[2]],
-        ]}
+        position={getAdjustedPosition(position, assets.grass.position)}
         onPointerDown={handlePointerDown}
-          receiveShadow 
+        castShadow
+        receiveShadow
       >
         <boxGeometry args={assets.grass.args} />
         <meshLambertMaterial
@@ -66,50 +71,59 @@ export function CityTile({
         />
       </mesh>
 
-      {/* Road: altura fixa */}
-      {tile.building && tile.building.id === "road" && (
-        <mesh
-          ref={buildingMeshRef}
-          position={[
-            position[assets.road.position[0]],
-            assets.road.position[1],
-            position[assets.road.position[2]],
-          ]}
-          onPointerDown={handlePointerDown}
-            castShadow // lança sombra
-    receiveShadow 
-        >
-          <boxGeometry args={assets.road.args} />
-          <meshLambertMaterial
-            color={
-              selected
-                ? lightenColor(getColorForBuilding("road"))
-                : getColorForBuilding("road")
-            }
-          />
-        </mesh>
-      )}
+      {/* Construções com modelo GLTF */}
+      {["residential", "commercial", "industrial"].map((id) => {
+        if (tile.building?.id !== id) return null;
 
-      {/* Outros edifícios: altura dinâmica */}
-      {tile.building &&
-        ["residential", "commercial", "industrial"].includes(tile.building.id) && (
-          <mesh
+        const asset = assets[id];
+        const model = {
+          residential: residentialMesh,
+          commercial: commercialMesh,
+          industrial: industrialMesh,
+        }[id];
+
+        if (!model) return null;
+
+        return (
+          <group
+            key={id}
             ref={buildingMeshRef}
-            position={[position[0], buildingHeight / 2 + baseHeight, position[2]]}
+            position={getAdjustedPosition(position, asset.position)}
+            scale={[0.25, 0.25, 0.25]}
             onPointerDown={handlePointerDown}
-              castShadow // lança sombra
-    receiveShadow 
+            castShadow
+            receiveShadow
           >
-            <boxGeometry args={[0.9, buildingHeight, 0.9]} />
+            <primitive object={model.clone(true)} />
+          </group>
+        );
+      })}
+
+      {/* Construção simples (ex: estrada) */}
+      {["road"].map((id) => {
+        if (tile.building?.id !== id) return null;
+        const asset = assets[id];
+
+        return (
+          <mesh
+            key={id}
+            ref={buildingMeshRef}
+            position={getAdjustedPosition(position, asset.position)}
+            onPointerDown={handlePointerDown}
+            castShadow
+            receiveShadow
+          >
+            <boxGeometry args={asset.args} />
             <meshLambertMaterial
               color={
                 selected
-                  ? lightenColor(getColorForBuilding(tile.building.id))
-                  : getColorForBuilding(tile.building.id)
+                  ? lightenColor(getColorForBuilding(id))
+                  : getColorForBuilding(id)
               }
             />
           </mesh>
-        )}
+        );
+      })}
     </group>
   );
 }

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
 interface ToolbarSidebarProps {
-  onSelect: (id?: string) => void; // id opcional, para limpar seleção
+  onSelect: (id?: string | undefined) => void; // id opcional, para limpar seleção
   selectedId?: string;
 }
 
