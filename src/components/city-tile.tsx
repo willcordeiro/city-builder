@@ -36,12 +36,16 @@ export function CityTile({
 
   function getColorForBuilding(buildingId: string): number {
     const asset = assets[buildingId];
-
     if (!asset) return 0xaaaaaa; // fallback color
     return parseInt(asset.color.replace("#", "0x"));
   }
+
+  const baseHeight = 0.1; // Altura do terreno
+  const buildingHeight = tile.building ? tile.building.height : baseHeight;
+
   return (
     <group>
+      {/* Terreno */}
       <mesh
         ref={grassMeshRef}
         position={[
@@ -52,54 +56,16 @@ export function CityTile({
         onPointerDown={handlePointerDown}
       >
         <boxGeometry args={assets.grass.args} />
-        <meshLambertMaterial color={selected ? lightenColor(getColorForBuilding("grass")) : getColorForBuilding("grass")} />
+        <meshLambertMaterial
+          color={
+            selected
+              ? lightenColor(getColorForBuilding("grass"))
+              : getColorForBuilding("grass")
+          }
+        />
       </mesh>
 
-      {tile.building && tile.building.id === "residential" && (
-        <mesh
-          ref={buildingMeshRef}
-          position={[
-            position[assets.residential.position[0]],
-            assets.residential.position[1],
-            position[assets.residential.position[2]],
-          ]}
-          onPointerDown={handlePointerDown}
-        >
-          <boxGeometry args={assets.residential.args} />
-          <meshLambertMaterial color={selected ? lightenColor(getColorForBuilding("residential")) : getColorForBuilding("residential")} />
-        </mesh>
-      )}
-
-      {tile.building && tile.building.id === "commercial" && (
-        <mesh
-          ref={buildingMeshRef}
-          position={[
-            position[assets.commercial.position[0]],
-            assets.commercial.position[1],
-            position[assets.commercial.position[2]],
-          ]}
-          onPointerDown={handlePointerDown}
-        >
-          <boxGeometry args={assets.commercial.args} />
-          <meshLambertMaterial color={selected ? lightenColor(getColorForBuilding("commercial")) : getColorForBuilding("commercial")} />
-        </mesh>
-      )}
-
-      {tile.building && tile.building.id === "industrial" && (
-        <mesh
-          ref={buildingMeshRef}
-          position={[
-            position[assets.industrial.position[0]],
-            assets.industrial.position[1],
-            position[assets.industrial.position[2]],
-          ]}
-          onPointerDown={handlePointerDown}
-        >
-          <boxGeometry args={assets.industrial.args} />
-          <meshLambertMaterial color={selected ? lightenColor(getColorForBuilding("industrial")) : getColorForBuilding("industrial")} />
-        </mesh>
-      )}
-
+      {/* Road: altura fixa */}
       {tile.building && tile.building.id === "road" && (
         <mesh
           ref={buildingMeshRef}
@@ -111,9 +77,34 @@ export function CityTile({
           onPointerDown={handlePointerDown}
         >
           <boxGeometry args={assets.road.args} />
-          <meshLambertMaterial color={selected ? lightenColor(getColorForBuilding("road")) : getColorForBuilding("road")} />
+          <meshLambertMaterial
+            color={
+              selected
+                ? lightenColor(getColorForBuilding("road"))
+                : getColorForBuilding("road")
+            }
+          />
         </mesh>
       )}
+
+      {/* Outros edifícios: altura dinâmica */}
+      {tile.building &&
+        ["residential", "commercial", "industrial"].includes(tile.building.id) && (
+          <mesh
+            ref={buildingMeshRef}
+            position={[position[0], buildingHeight / 2 + baseHeight, position[2]]}
+            onPointerDown={handlePointerDown}
+          >
+            <boxGeometry args={[0.9, buildingHeight, 0.9]} />
+            <meshLambertMaterial
+              color={
+                selected
+                  ? lightenColor(getColorForBuilding(tile.building.id))
+                  : getColorForBuilding(tile.building.id)
+              }
+            />
+          </mesh>
+        )}
     </group>
   );
 }
