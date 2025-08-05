@@ -55,7 +55,14 @@ export function CityGrid({ size }: CityGridProps) {
       for (let y = 0; y < city.size; y++) {
         const tile = city.data[x][y];
         const position: [number, number, number] = [x, 0, y];
-        tileComponents.push(<CityTile key={`tile-${x}-${y}`} tile={tile} position={position} />);
+        tileComponents.push(
+          <CityTile
+            key={`tile-${x}-${y}`}
+            tile={tile}
+            position={position}
+            terrainID={tile.terrainID}
+          />
+        );
       }
     }
     return tileComponents;

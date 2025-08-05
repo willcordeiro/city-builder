@@ -7,9 +7,10 @@ import type { Tile } from "@/types/city"
 interface CityTileProps {
   tile: Tile
   position: [number, number, number]
+  terrainID: string
 }
 
-export function CityTile({ tile, position }: CityTileProps) {
+export function CityTile({ tile, position, terrainID }: CityTileProps) {
   const grassMeshRef = useRef<Mesh>(null)
   const buildingMeshRef = useRef<Mesh>(null)
 

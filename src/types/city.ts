@@ -1,9 +1,11 @@
 export interface Tile {
   x: number
   y: number
-  building:any;
+  building: "building-1" | "building-2" | "building-3" | undefined
+  terrainID: "grass"
   update: () => void
 }
+
 
 export interface City {
   size: number
