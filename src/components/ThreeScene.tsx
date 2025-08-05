@@ -9,7 +9,7 @@ export default function Home() {
   return (
     <>
       <Canvas
-        camera={{ position: [20, 20, 20], fov: 60 }}
+        camera={{ position: [25,10, 25], fov: 60 }}
         style={{
           position: "fixed",
           top: 0,
@@ -20,7 +20,7 @@ export default function Home() {
         }}
       >
         <Suspense fallback={null}>
-          <CityGrid size={8} />
+          <CityGrid size={16} />
           <ambientLight color={0xffffff} intensity={0.2} />
 
           <directionalLight
