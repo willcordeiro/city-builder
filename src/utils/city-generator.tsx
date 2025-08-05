@@ -7,18 +7,10 @@ export function createCity(size: number): City {
     return {
       x,
       y,
-      building: undefined,
-      selected:null,
+      buildingId: undefined,
+      selected: null,
       terrainID: "grass",
-      update() {
-        if (this.building === undefined) {
-          this.building = "building-1";
-        } else if (this.building === "building-1") {
-          this.building = "building-2";
-        } else if (this.building === "building-2") {
-          this.building = "building-3";
-        }
-      },
+      update() {},
     };
   }
 

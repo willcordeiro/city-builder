@@ -16,44 +16,15 @@ export function CityGrid({ size, selectedToolId }: CityGridProps) {
 
   const [selectedTile, setSelectedTile] = useState<{x: number, y: number} | null>(null);
 
-  useEffect(() => {
-    let interval: NodeJS.Timeout | null = null;
-    function isFull() {
-      for (let x = 0; x < city.size; x++) {
-        for (let y = 0; y < city.size; y++) {
-          if (city.data[x][y].building !== "building-3") {
-            return false;
-          }
-        }
-      }
-      return true;
-    }
-    interval = setInterval(() => {
-      if (!isFull()) {
-        // Find all tiles that can still grow
-        const candidates = [];
-        for (let x = 0; x < city.size; x++) {
-          for (let y = 0; y < city.size; y++) {
-            if (city.data[x][y].building !== "building-3") {
-              candidates.push(city.data[x][y]);
-            }
-          }
-        }
-        // Pick one random candidate and update it
-        if (candidates.length > 0) {
-          const idx = Math.floor(Math.random() * candidates.length);
-          candidates[idx].update();
-        }
-        setTick(tick => tick + 1); // force re-render
-      } else {
-        if (interval) clearInterval(interval);
-      }
-    }, 1000); // update every 2 seconds
-    return () => interval && clearInterval(interval);
-  }, [city]);
+  // Remove auto-upgrade logic. Now buildings are placed by user interaction.
 
   const handleSelectTile = (x: number, y: number) => {
     setSelectedTile({ x, y });
+    // Set buildingId on tile when user clicks
+    if (selectedToolId && city.data[x][y].buildingId !== selectedToolId) {
+      city.data[x][y].buildingId = selectedToolId as City["data"][number][number]["buildingId"];
+      setTick(tick => tick + 1); // force re-render
+    }
   };
 
   const tiles = useMemo(() => {

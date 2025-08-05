@@ -24,7 +24,7 @@ export function CityTile({ tile, position, terrainID, selected, onSelectTile, se
     onSelectTile(tile.x, tile.y);
     // Log x, y, building, and terrainID in a clear format
     console.log(
-      `Clicked tile: x=${tile.x}, y=${tile.y}, building=${tile.building ?? "none"}, terrainID=${terrainID}`
+      `Clicked tile: x=${tile.x}, y=${tile.y}, building=${tile.buildingId ?? "none"}, terrainID=${terrainID}`
     );
   }
 
@@ -45,16 +45,43 @@ export function CityTile({ tile, position, terrainID, selected, onSelectTile, se
         <meshLambertMaterial color={selected ? lightenColor(0x00aa00) : 0x00aa00} />
       </mesh>
 
-      {tile.building && buildingColors[tile.building] !== undefined && (
+      {tile.buildingId === "residential" && (
         <mesh
-          ref={buildingMeshRef}
-          position={[position[0], buildingSizes[tile.building][1] / 2, position[2]]}
+          position={[position[0], 0.5, position[2]]}
           onPointerDown={handlePointerDown}
         >
-          <boxGeometry args={buildingSizes[tile.building]} />
-          <meshLambertMaterial color={selected ? lightenColor(buildingColors[tile.building]) : buildingColors[tile.building]} />
+          <boxGeometry args={[0.8, 1, 0.8]} />
+          <meshLambertMaterial color={0x27ae60} />
         </mesh>
       )}
+      {tile.buildingId === "commercial" && (
+        <mesh
+          position={[position[0], 0.7, position[2]]}
+          onPointerDown={handlePointerDown}
+        >
+          <boxGeometry args={[1, 1.4, 1]} />
+          <meshLambertMaterial color={0x2980b9} />
+        </mesh>
+      )}
+      {tile.buildingId === "industrial" && (
+        <mesh
+          position={[position[0], 0.6, position[2]]}
+          onPointerDown={handlePointerDown}
+        >
+          <cylinderGeometry args={[0.5, 0.5, 1.2, 16]} />
+          <meshLambertMaterial color={0xf39c12} />
+        </mesh>
+      )}
+      {tile.buildingId === "road" && (
+        <mesh
+          position={[position[0], 0.05, position[2]]}
+          onPointerDown={handlePointerDown}
+        >
+          <boxGeometry args={[1, 0.1, 1]} />
+          <meshLambertMaterial color={0x7f8c8d} />
+        </mesh>
+      )}
+      {/* Bulldoze: don't render any building mesh */}
     </group>
   )
 }
