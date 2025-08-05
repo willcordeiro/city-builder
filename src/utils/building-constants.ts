@@ -2,6 +2,7 @@ interface BuildingFactory {
   [key: string]: () => {
     height: number;
     id: string;
+    updated: boolean;
     update: () => void;
   };
 }
@@ -11,10 +12,12 @@ const buildingFactory: BuildingFactory = {
     return {
       height: 1,
       id: "residential",
+      updated: true,
       update: function () {
         if (Math.random() < 0.01) {
           if (this.height < 5) {
             this.height += 1;
+            this.updated = true;
           }
         }
       },
@@ -24,10 +27,12 @@ const buildingFactory: BuildingFactory = {
     return {
       height: 1,
       id: "commercial",
+      updated: true,
       update: function () {
         if (Math.random() < 0.01) {
           if (this.height < 5) {
             this.height += 1;
+            this.updated = true;
           }
         }
       },
@@ -35,12 +40,14 @@ const buildingFactory: BuildingFactory = {
   },
   industrial: () => {
     return {
-      height: 1,
       id: "industrial",
+      height: 1,
+      updated: true,
       update: function () {
         if (Math.random() < 0.01) {
           if (this.height < 5) {
             this.height += 1;
+            this.updated = true;
           }
         }
       },
@@ -48,17 +55,16 @@ const buildingFactory: BuildingFactory = {
   },
   road: () => {
     return {
-      height: 1,
       id: "road",
+      height: 1,
+      updated: true,
       update: function () {
-        if (Math.random() < 0.01) {
-          if (this.height < 5) {
-            this.height += 1;
-          }
-        }
+        this.updated = false;
       },
     };
   },
 };
+
+
 
 export default buildingFactory;

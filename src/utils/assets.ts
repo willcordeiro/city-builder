@@ -6,6 +6,12 @@ interface Asset {
 }
 
 const assets: { [key: string]: Asset } = {
+   grass: {
+    id: "grass",
+    args: [1, 1, 1],
+    color: "#558B2F",
+    position: [0, -0.5, 2],
+  },
   residential: {
     id: "residential",
     args: [0.8, 1, 0.8],

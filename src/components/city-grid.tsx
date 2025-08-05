@@ -25,22 +25,27 @@ export function CityGrid({ size, selectedToolId }: CityGridProps) {
     toolRef.current = selectedToolId;
   }, [selectedToolId]);
 
-const handleSelectTile = (x: number, y: number) => {
-  setSelectedTile({ x, y });
-  const currentTool = toolRef.current;
+  const handleSelectTile = (x: number, y: number) => {
+    setSelectedTile({ x, y });
+    const currentTool = toolRef.current;
 
-  if (currentTool && currentTool === "bulldoze") {
-    if (city.data[x][y].building) {
-      city.data[x][y].building = { height: 0, id: "", update: () => {} };
-    } else {
-      city.data[x][y].building = undefined;
+    if (currentTool && currentTool === "bulldoze") {
+      if (city.data[x][y].building) {
+        city.data[x][y].building = {
+          height: 0,
+          id: "",
+          update: () => {},
+          updated: true,
+        };
+      } else {
+        city.data[x][y].building = undefined;
+      }
+      setTick((t) => t + 1);
+    } else if (currentTool && city.data[x][y].building?.id !== currentTool) {
+      city.data[x][y].building = buildingFactory[currentTool]();
+      setTick((t) => t + 1);
     }
-    setTick((t) => t + 1);
-  } else if (currentTool && city.data[x][y].building?.id !== currentTool) {
-    city.data[x][y].building = buildingFactory[currentTool]();
-    setTick((t) => t + 1);
-  }
-};
+  };
 
   const tiles = useMemo(() => {
     const tileComponents = [];
