@@ -9,7 +9,7 @@ const assets: { [key: string]: Asset } = {
    grass: {
     id: "grass",
     args: [1, 1, 1],
-    color: "#558B2F",
+    color: "#B9C753",
     position: [0, -0.5, 2],
   },
   residential: {
@@ -33,7 +33,7 @@ const assets: { [key: string]: Asset } = {
   road: {
     id: "road",
     args: [1, 0.1, 1],
-    color: "#7f8c8d",
+    color: "#3A3B3C",
     position: [0, 0.05, 2],
   },
 };

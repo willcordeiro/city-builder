@@ -54,6 +54,7 @@ export function CityTile({
           position[assets.grass.position[2]],
         ]}
         onPointerDown={handlePointerDown}
+          receiveShadow 
       >
         <boxGeometry args={assets.grass.args} />
         <meshLambertMaterial
@@ -75,6 +76,8 @@ export function CityTile({
             position[assets.road.position[2]],
           ]}
           onPointerDown={handlePointerDown}
+            castShadow // lança sombra
+    receiveShadow 
         >
           <boxGeometry args={assets.road.args} />
           <meshLambertMaterial
@@ -94,6 +97,8 @@ export function CityTile({
             ref={buildingMeshRef}
             position={[position[0], buildingHeight / 2 + baseHeight, position[2]]}
             onPointerDown={handlePointerDown}
+              castShadow // lança sombra
+    receiveShadow 
           >
             <boxGeometry args={[0.9, buildingHeight, 0.9]} />
             <meshLambertMaterial
