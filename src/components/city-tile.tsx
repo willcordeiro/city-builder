@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import type { Mesh } from "three";
 import type { Tile } from "@/types/city";
-import { TOOL_DEFINITIONS } from "@/utils/tool-constants";
+import assets from "@/utils/assets";
 
 interface CityTileProps {
   tile: Tile;
@@ -28,21 +28,17 @@ export function CityTile({
   function handlePointerDown(event: any) {
     event.stopPropagation();
     onSelectTile(tile.x, tile.y);
-    console.log(
-      `Clicked tile: x=${tile.x}, y=${tile.y}, building=${tile.buildingId ?? "none"}, terrainID=${terrainID}`
-    );
   }
 
   function lightenColor(hex: number): number {
     return hex + 0x222222 > 0xffffff ? 0xffffff : hex + 0x222222;
   }
 
-  function getColorForBuilding(buildingId: string): number {
-    const tool = TOOL_DEFINITIONS.find((t) => t.id === buildingId);
-    if (!tool) return 0xaaaaaa; // fallback color
-    return parseInt(tool.color.replace("#", "0x"));
-  }
-
+function getColorForBuilding(buildingId: string): number {
+  const asset = assets[buildingId];
+  if (!asset) return 0xaaaaaa; // fallback color
+  return parseInt(asset.color.replace("#", "0x"));
+}
   return (
     <group>
       <mesh
@@ -54,46 +50,46 @@ export function CityTile({
         <meshLambertMaterial color={selected ? lightenColor(0x00aa00) : 0x00aa00} />
       </mesh>
 
-      {tile.buildingId === "residential" && (
+      {tile.building && tile.building.id === "residential" && (
         <mesh
           ref={buildingMeshRef}
-          position={[position[0], 0.5, position[2]]}
+           position={[position[assets.residential.position[0]], assets.residential.position[1], position[assets.residential.position[2]]]}
           onPointerDown={handlePointerDown}
         >
-          <boxGeometry args={[0.8, 1, 0.8]} />
+          <boxGeometry args={assets.residential.args} />
           <meshLambertMaterial color={getColorForBuilding("residential")} />
         </mesh>
       )}
 
-      {tile.buildingId === "commercial" && (
+      {tile.building && tile.building.id === "commercial" && (
         <mesh
           ref={buildingMeshRef}
-          position={[position[0], 0.7, position[2]]}
+        position={[position[assets.commercial.position[0]], assets.commercial.position[1], position[assets.commercial.position[2]]]}
           onPointerDown={handlePointerDown}
         >
-          <boxGeometry args={[1, 1.4, 1]} />
+          <boxGeometry args={assets.commercial.args} />
           <meshLambertMaterial color={getColorForBuilding("commercial")} />
         </mesh>
       )}
 
-      {tile.buildingId === "industrial" && (
+      {tile.building && tile.building.id === "industrial" && (
         <mesh
           ref={buildingMeshRef}
-          position={[position[0], 0.6, position[2]]}
+        position={[position[assets.industrial.position[0]], assets.industrial.position[1], position[assets.industrial.position[2]]]}
           onPointerDown={handlePointerDown}
         >
-          <cylinderGeometry args={[0.5, 0.5, 1.2, 16]} />
+          <boxGeometry args={assets.industrial.args} />
           <meshLambertMaterial color={getColorForBuilding("industrial")} />
         </mesh>
       )}
 
-      {tile.buildingId === "road" && (
+      {tile.building && tile.building.id === "road" && (
         <mesh
           ref={buildingMeshRef}
-          position={[position[0], 0.05, position[2]]}
+        position={[position[assets.road.position[0]], assets.road.position[1], position[assets.road.position[2]]]}
           onPointerDown={handlePointerDown}
         >
-          <boxGeometry args={[1, 0.1, 1]} />
+          <boxGeometry args={assets.road.args} />
           <meshLambertMaterial color={getColorForBuilding("road")} />
         </mesh>
       )}

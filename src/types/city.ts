@@ -1,11 +1,12 @@
-export type BuildingId = "bulldoze" | "residential" | "commercial" | "industrial" | "road";
+import buildingFactory from "@/utils/building-constants";
+
+export type Building = ReturnType<typeof buildingFactory[keyof typeof buildingFactory]>;
 
 export interface Tile {
   x: number;
   y: number;
-  buildingId?: BuildingId;
+  building?: Building;
   terrainID: "grass";
-  update: () => void;
   selected: boolean | null;
 }
 

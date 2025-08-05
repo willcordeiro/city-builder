@@ -1,11 +1,64 @@
-export const buildingColors: Record<string, number> = {
-  "building-1": 0x777777,
-  "building-2": 0x2222aa,
-  "building-3": 0xaa2222,
+interface BuildingFactory {
+  [key: string]: () => {
+    height: number;
+    id: string;
+    update: () => void;
+  };
+}
+
+const buildingFactory: BuildingFactory = {
+  residential: () => {
+    return {
+      height: 1,
+      id: "residential",
+      update: function () {
+        if (Math.random() < 0.01) {
+          if (this.height < 5) {
+            this.height += 1;
+          }
+        }
+      },
+    };
+  },
+  commercial: () => {
+    return {
+      height: 1,
+      id: "commercial",
+      update: function () {
+        if (Math.random() < 0.01) {
+          if (this.height < 5) {
+            this.height += 1;
+          }
+        }
+      },
+    };
+  },
+  industrial: () => {
+    return {
+      height: 1,
+      id: "industrial",
+      update: function () {
+        if (Math.random() < 0.01) {
+          if (this.height < 5) {
+            this.height += 1;
+          }
+        }
+      },
+    };
+  },
+  road: () => {
+    return {
+      height: 1,
+      id: "road",
+      update: function () {
+        if (Math.random() < 0.01) {
+          if (this.height < 5) {
+            this.height += 1;
+          }
+        }
+      },
+    };
+  },
 };
 
-export const buildingSizes: Record<string, [number, number, number]> = {
-  "building-1": [1, 1, 1],
-  "building-2": [1, 2, 1],
-  "building-3": [1, 3, 1],
-};
+export default buildingFactory;
