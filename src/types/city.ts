@@ -4,6 +4,7 @@ export interface Tile {
   building: "building-1" | "building-2" | "building-3" | undefined
   terrainID: "grass"
   update: () => void
+  selected:Boolean | null;
 }
 
 

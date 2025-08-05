@@ -8,6 +8,7 @@ export function createCity(size: number): City {
       x,
       y,
       building: undefined,
+      selected:null,
       terrainID: "grass",
       update() {
         if (this.building === undefined) {

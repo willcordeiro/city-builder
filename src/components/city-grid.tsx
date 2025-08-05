@@ -12,6 +12,7 @@ interface CityGridProps {
 export function CityGrid({ size }: CityGridProps) {
   const city: City = useMemo(() => createCity(size), [size]);
   const [tick, setTick] = useState(0);
+  const [selectedTile, setSelectedTile] = useState<{x: number, y: number} | null>(null);
 
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
@@ -49,24 +50,31 @@ export function CityGrid({ size }: CityGridProps) {
     return () => interval && clearInterval(interval);
   }, [city]);
 
+  const handleSelectTile = (x: number, y: number) => {
+    setSelectedTile({ x, y });
+  };
+
   const tiles = useMemo(() => {
     const tileComponents = [];
     for (let x = 0; x < city.size; x++) {
       for (let y = 0; y < city.size; y++) {
         const tile = city.data[x][y];
         const position: [number, number, number] = [x, 0, y];
+        const isSelected = selectedTile !== null && selectedTile.x === x && selectedTile.y === y;
         tileComponents.push(
           <CityTile
             key={`tile-${x}-${y}`}
             tile={tile}
             position={position}
             terrainID={tile.terrainID}
+            selected={isSelected}
+            onSelectTile={handleSelectTile}
           />
         );
       }
     }
     return tileComponents;
-  }, [city, city.data, tick]);
+  }, [city, city.data, tick, selectedTile]);
 
   return <group>{tiles}</group>;
 }
