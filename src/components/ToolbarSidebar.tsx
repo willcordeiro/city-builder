@@ -8,16 +8,20 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Home, Store, Factory, Car, Trash2, XCircle } from "lucide-react"; // Importa os ícones necessários
+import { Home, Store, Factory, Car, Trash2, XCircle, Camera, CameraOff } from 'lucide-react'; // Import CameraOff icon
 
 interface CityBuilderToolbarProps {
   onSelect: (id?: string | undefined) => void; // id opcional, para limpar seleção
   selectedId?: string;
+  onToggleIsometric: () => void; // Renamed prop for toggling isometric view
+  isIsometricActive: boolean; // New prop to indicate if isometric view is active
 }
 
 export function ToolbarSidebar({
   onSelect,
   selectedId,
+  onToggleIsometric, // Destructure new prop
+  isIsometricActive, // Destructure new prop
 }: CityBuilderToolbarProps) {
   // Define os itens da barra de ferramentas com seus ícones e sub-opções
   const toolbarItems = [
@@ -61,17 +65,22 @@ export function ToolbarSidebar({
       label: "Demolir",
       icon: Trash2,
     },
+    {
+      id: "camera-toggle", // Changed ID to be more generic for toggle
+      label: isIsometricActive ? "Visão Normal" : "Visão Isométrica", // Change label based on state
+      icon: isIsometricActive ? CameraOff : Camera, // Change icon based on state
+      action: onToggleIsometric, // Direct action for this button
+    },
   ];
 
   return (
     <Card className="fixed bottom-4 left-1/2 -translate-x-1/2 p-3 z-10 flex flex-row gap-2 items-center shadow-lg">
       {toolbarItems.map((item) => {
-        // Verifica se algum sub-item deste grupo está selecionado (ou o próprio item se não tiver sub-opções)
+        // Check if any sub-item of this group is selected (or the item itself if no sub-options)
         const isSelected = item.subOptions
           ? item.subOptions.some((sub) => sub.id === selectedId)
           : item.id === selectedId;
-
-        // Define a variante do botão principal, aplicando 'destructive' para 'Demolir' se selecionado
+        // Define the main button variant, applying 'destructive' for 'Demolir' if selected
         const buttonVariant =
           item.id === "bulldoze" && isSelected
             ? "destructive"
@@ -79,8 +88,21 @@ export function ToolbarSidebar({
             ? "default"
             : "outline";
 
-        if (!item.subOptions) {
-          // Renderiza um botão simples se não houver sub-opções
+        if (item.action) {
+          // Render a simple button for direct actions like camera change
+          return (
+            <Button
+              key={item.id}
+              onClick={item.action} // Call the direct action
+              variant={item.id === "camera-toggle" && isIsometricActive ? "default" : "outline"} // Highlight if active
+              size="icon"
+              className="flex flex-col h-auto w-auto p-3"
+            >
+              <item.icon className="h-6 w-6" />
+            </Button>
+          );
+        } else if (!item.subOptions) {
+          // Render a simple button if no sub-options
           return (
             <Button
               key={item.id}
@@ -94,8 +116,7 @@ export function ToolbarSidebar({
             </Button>
           );
         }
-
-        // Renderiza um DropdownMenu se houver sub-opções
+        // Render a DropdownMenu if there are sub-options
         return (
           <DropdownMenu key={item.id}>
             <DropdownMenuTrigger asChild>
@@ -126,7 +147,7 @@ export function ToolbarSidebar({
           </DropdownMenu>
         );
       })}
-      {/* Botão para limpar a seleção */}
+      {/* Button to clear selection */}
       <Button
         onClick={() => onSelect(undefined)}
         variant="secondary"

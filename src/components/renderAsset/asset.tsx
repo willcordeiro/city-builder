@@ -30,7 +30,7 @@ function Asset({ asset, position, handlePointerDown }: AssetProps) {
       const timeout = setTimeout(() => {
         // Update the loading state via the context function
         updateAssetLoading(x, y, false)
-      }, 1000) // Simulate loading time
+      }, 3000) // Simulate loading time
 
       return () => clearTimeout(timeout)
     }
@@ -56,3 +56,7 @@ function Asset({ asset, position, handlePointerDown }: AssetProps) {
 }
 
 export default Asset
+
+//todo buildings appear all at once if other building is loading
+//todo render system flicking while placing buildings
+//todo render sustem have a tick rate which is not the best way to do it
