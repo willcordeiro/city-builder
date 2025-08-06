@@ -3,6 +3,7 @@ import { Asset } from "@/utils/assets";
 export type Building = Asset;
 
 export interface Tile {
+  id:string;
   x: number;
   y: number;
   loading:boolean;
@@ -12,7 +13,6 @@ export interface Tile {
 }
 
 export interface City {
-  city: any;
   size: number;
   data: Tile[][];
 }

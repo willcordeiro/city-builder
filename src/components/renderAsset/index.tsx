@@ -1,10 +1,6 @@
 "use client"
 
-import { useAsset } from "@/hooks/useAssetManager";
-import useCity from "@/hooks/useCity";
 import { getAsset } from "@/utils/getAsset";
-import { getAdjustedPosition } from "@/utils/positionUtils";
-import { useState, useEffect, RefObject, use } from "react";
 import * as THREE from "three";
 import Asset from "./asset";
 

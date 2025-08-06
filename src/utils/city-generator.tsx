@@ -1,10 +1,13 @@
 import type { City, Tile } from "@/types/city"
+import { v4 as uuidv4 } from "uuid";
 
 export function createCity(size: number): City {
   const data: Tile[][] = [];
 
   function createTile(x: number, y: number): Tile {
     return {
+      id: uuidv4(),
+      loading: false,
       x,
       y,
       building:undefined,
@@ -26,7 +29,7 @@ export function createCity(size: number): City {
   initialize()
 
   return {
-    size,
-    data,
-  }
+  size,
+  data,
+}
 }

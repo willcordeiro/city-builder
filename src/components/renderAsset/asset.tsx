@@ -1,62 +1,64 @@
-"use client"
-
-import { useAsset } from "@/hooks/useAssetManager"
-import useCity from "@/hooks/useCity"
-import { getAdjustedPosition } from "@/utils/positionUtils"
-import { useEffect } from "react"
-import * as THREE from "three"
-import { Asset as AssetType } from "@/utils/assets"
+import { useAsset } from "@/hooks/useAssetManager";
+import useCity from "@/hooks/useCity";
+import { getAdjustedPosition } from "@/utils/positionUtils";
+import { useEffect, useState } from "react";
+import * as THREE from "three";
+import { Asset as AssetType } from "@/utils/assets";
+import { useSpring, a } from "@react-spring/three";
 
 interface AssetProps {
-  asset: AssetType
-  position: [number, number, number] // [x, y, z] in Three.js coordinates
-  handlePointerDown: (event: THREE.Event) => void
+  asset: AssetType;
+  position: [number, number, number];
+  handlePointerDown: (event: THREE.Event) => void;
 }
 
 function Asset({ asset, position, handlePointerDown }: AssetProps) {
-  const { city, updateAssetLoading } = useCity()
-  const x = position[0] // Grid X
-  const y = position[2] // Grid Y (using Z for grid Y in 3D space)
+  const { city, updateAssetLoading } = useCity();
+  const [shouldAnimate, setShouldAnimate] = useState(false);
 
-  // Ensure currentAsset is always up-to-date with the latest city state
-  const currentAsset = city.data[x][y]
+  const x = position[0];
+  const y = position[2];
+  const currentAsset = city.data[x][y];
 
-  // Load models
-  const model = useAsset(asset.id)
-  const modelLoading = useAsset("constructionSmall")
+  const model = useAsset(asset.id);
+  const modelLoading = useAsset("constructionSmall");
 
+  // Marca como finalizado após simulação de carregamento
   useEffect(() => {
-    if (currentAsset.loading) {
+    if (currentAsset?.loading) {
+      setShouldAnimate(true); // inicia animação para esta tile
       const timeout = setTimeout(() => {
-        // Update the loading state via the context function
-        updateAssetLoading(x, y, false)
-      }, 3000) // Simulate loading time
+        updateAssetLoading(x, y, false);
+      }, 3000);
 
-      return () => clearTimeout(timeout)
+      return () => clearTimeout(timeout);
     }
-  }, [currentAsset?.loading, x, y, updateAssetLoading]) // Dependencies: re-run if loading state or position changes
+  }, [currentAsset?.loading, x, y, updateAssetLoading]);
 
-  // Determine which model to display based on loading state
-  const activeModel = currentAsset.loading ? modelLoading : model
+  // Só aplica animação se for a tile recém colocada
+  const { scale } = useSpring({
+    scale: shouldAnimate ? [0.25, 0.25, 0.25] : [0.25, 0.25, 0.25],
+    from: shouldAnimate ? { scale: [0, 0, 0] } : undefined,
+    config: { tension: 300, friction: 10 },
+    delay: 50,
+    onRest: () => setShouldAnimate(false), // desativa após animar uma vez
+  });
 
-  // Render a single group and primitive, changing only the object prop
-  if (!currentAsset) return null // Handle cases where currentAsset might be undefined
+  const activeModel = currentAsset?.loading ? modelLoading : model;
+
+  if (!currentAsset || !activeModel) return null;
 
   return (
-    <group
+    <a.group
       position={getAdjustedPosition(position, asset.position)}
-      scale={[0.25, 0.25, 0.25]}
+      scale={scale.to((x, y, z) => [x, y, z])}
       onPointerDown={handlePointerDown}
       castShadow
       receiveShadow
     >
       <primitive object={activeModel} />
-    </group>
-  )
+    </a.group>
+  );
 }
 
-export default Asset
-
-//todo BUILDING placing sounds
-//todo building placing animation (like a bounce or fade-in)
-//todo roads connections
+export default Asset;
