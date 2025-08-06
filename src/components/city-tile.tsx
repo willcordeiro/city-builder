@@ -1,3 +1,4 @@
+"use client";
 import { useRef } from "react";
 import type { Mesh } from "three";
 import type { Tile } from "@/types/city";
