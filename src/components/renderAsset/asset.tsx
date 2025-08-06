@@ -1,7 +1,7 @@
 import { useAsset } from "@/hooks/useAssetManager";
 import useCity from "@/hooks/useCity";
 import { getAdjustedPosition } from "@/utils/positionUtils";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import * as THREE from "three";
 import { Asset as AssetType } from "@/utils/assets";
 import { useSpring, a } from "@react-spring/three";
@@ -14,7 +14,7 @@ interface AssetProps {
 
 function Asset({ asset, position, handlePointerDown }: AssetProps) {
   const { city, updateAssetLoading } = useCity();
-  const [shouldAnimate, setShouldAnimate] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const x = position[0];
   const y = position[2];
@@ -23,10 +23,19 @@ function Asset({ asset, position, handlePointerDown }: AssetProps) {
   const model = useAsset(asset.id);
   const modelLoading = useAsset("constructionSmall");
 
-  // Marca como finalizado após simulação de carregamento
+  // Inicializa o áudio
+  useEffect(() => {
+    audioRef.current = new Audio("/sounds/placing.mp3");
+  }, []);
+
   useEffect(() => {
     if (currentAsset?.loading) {
-      setShouldAnimate(true); // inicia animação para esta tile
+      if (audioRef.current) {
+        audioRef.current.currentTime = 0;
+        audioRef.current.volume = 0.05;
+        audioRef.current.play();
+      }
+
       const timeout = setTimeout(() => {
         updateAssetLoading(x, y, false);
       }, 3000);
@@ -35,16 +44,14 @@ function Asset({ asset, position, handlePointerDown }: AssetProps) {
     }
   }, [currentAsset?.loading, x, y, updateAssetLoading]);
 
-  // Só aplica animação se for a tile recém colocada
+  const activeModel = currentAsset?.loading ? modelLoading : model;
+
   const { scale } = useSpring({
-    scale: shouldAnimate ? [0.25, 0.25, 0.25] : [0.25, 0.25, 0.25],
-    from: shouldAnimate ? { scale: [0, 0, 0] } : undefined,
+    scale: !currentAsset?.loading ? [0.25, 0.25, 0.25] : [0.25, 0.25, 0.25],
+    from: !currentAsset?.loading ? { scale: [0, 0, 0] } : undefined,
     config: { tension: 300, friction: 10 },
     delay: 50,
-    onRest: () => setShouldAnimate(false), // desativa após animar uma vez
   });
-
-  const activeModel = currentAsset?.loading ? modelLoading : model;
 
   if (!currentAsset || !activeModel) return null;
 
