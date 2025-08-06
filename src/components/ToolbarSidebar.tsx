@@ -159,14 +159,6 @@ export function ToolbarSidebar({
           </DropdownMenu>
         );
       })}
-      <Button
-        onClick={() => onSelect(undefined)}
-        variant="secondary"
-        size="icon"
-        className="flex flex-col h-auto w-auto p-3 ml-4"
-      >
-        <XCircle className="h-6 w-6" />
-      </Button>
     </Card>
   );
 }

@@ -59,3 +59,4 @@ export default Asset
 
 //todo BUILDING placing sounds
 //todo building placing animation (like a bounce or fade-in)
+//todo roads connections

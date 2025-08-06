@@ -56,7 +56,7 @@ export default function ThreeScene({ size }: { size: number }) {
           left: 0,
           width: "100vw",
           height: "100vh",
-          background: "#777777",
+          background: "linear-gradient(#6B96C9, #3D5D8D)",
         }}
       >
        <Suspense fallback={null}>
