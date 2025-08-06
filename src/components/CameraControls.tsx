@@ -66,7 +66,7 @@ const CameraControls = forwardRef<CameraControlsHandle, CameraControlsProps>(
 
       const handleMouseScroll = (e: WheelEvent) => {
         e.preventDefault();
-        const delta = e.deltaY > 0 ? -1 : 1;
+        const delta = e.deltaY > 0 ? -2 : 2;
         camera.position.addScaledVector(
           camera.getWorldDirection(new THREE.Vector3()),
           delta

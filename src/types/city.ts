@@ -1,6 +1,6 @@
-import buildingFactory from "@/utils/building-constants";
+import { Asset } from "@/utils/assets";
 
-export type Building = ReturnType<typeof buildingFactory[keyof typeof buildingFactory]>;
+export type Building = Asset;
 
 export interface Tile {
   x: number;
@@ -12,6 +12,7 @@ export interface Tile {
 }
 
 export interface City {
+  city: any;
   size: number;
   data: Tile[][];
 }

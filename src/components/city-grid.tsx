@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { CityTile } from "./city-tile";
-import buildingFactory from "@/utils/building-constants";
+import assets from "@/utils/assets";
 import useCity from "@/hooks/useCity";
 
 interface CityGridProps {
@@ -27,11 +27,11 @@ export function CityGrid({ selectedToolId }: CityGridProps) {
       if (city.data[x][y].building) {
         city.data[x][y].building = undefined; // Remove o edifício
       }
-    } else if (currentTool && buildingFactory[currentTool]) {
+    } else if (currentTool && assets[currentTool]) {
       const existingBuilding = city.data[x][y].building;
 
       if (!existingBuilding || existingBuilding.id !== currentTool) {
-        const newBuilding = buildingFactory[currentTool]();
+        const newBuilding = assets[currentTool];
 
         city.data[x][y].building = newBuilding; // Adiciona o novo edifício
       }
