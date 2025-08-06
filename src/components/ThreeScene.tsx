@@ -6,7 +6,8 @@ import { Suspense, useRef, useState } from "react";
 import { CityGrid } from "@/components/city-grid";
 import { ToolbarSidebar } from "@/components/ToolbarSidebar";
 import * as THREE from "three";
-import CameraControls, { CameraControlsHandle } from "./CameraControls"; // ✨ importa o tipo
+import CameraControls, { CameraControlsHandle } from "./CameraControls";
+import Loader from "./loader";
 
 export default function ThreeScene({ size }: { size: number }) {
   const [selectedToolId, setSelectedToolId] = useState<string | undefined>("residential");
@@ -58,7 +59,7 @@ export default function ThreeScene({ size }: { size: number }) {
           background: "#777777",
         }}
       >
-        <Suspense fallback={null}>
+       <Suspense fallback={null}>
           <CityGrid selectedToolId={selectedToolId} />
           <mesh
             rotation={[-Math.PI / 2, 0, 0]}

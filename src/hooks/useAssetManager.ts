@@ -1,9 +1,8 @@
 "use client";
 import * as THREE from "three";
-import { useLoader } from "@react-three/fiber";
-import { GLTFLoader } from "three/examples/jsm/Addons.js";
 import { useMemo } from "react";
-import models from "@/utils/assets"; // Assuming this path is correct
+import assets from "@/utils/assets"; // Assuming this path is correct
+import { useGLTF } from "@react-three/drei";
 
 // Cache for loaded textures to prevent redundant loading
 const textureCache = new Map<string, THREE.Texture>();
@@ -17,12 +16,18 @@ function getTexture(path: string): THREE.Texture {
   return textureCache.get(path)!;
 }
 
-export function useAsset(name: keyof typeof models ) {
-  const { filename, scale = 1, rotation = 0 } = models[name];
+Object.values(assets)
+  .filter(({ filename }) => filename) // remove os vazios
+  .forEach(({ filename }) => {
+    useGLTF.preload(`/assets/models/${filename}`);
+  });
+
+
+export function useAsset(name: keyof typeof assets ) {
+  const { filename, scale = 1, rotation = 0 } = assets[name];
 
   // useLoader handles caching of the GLTF data itself.
-  const gltf = useLoader(GLTFLoader, `/assets/models/${filename}`);
-
+  const gltf = useGLTF(`/assets/models/${filename}`);
   const mesh = useMemo(() => {
     // Clone the scene from the loaded GLTF data.
     // This clone happens once per useAsset call for a given filename/scale/rotation.
