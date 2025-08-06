@@ -22,9 +22,6 @@ export function CityTile({
   selected,
   onSelectTile,
 }: CityTileProps) {
-  const grassMeshRef = useRef<Mesh>(null);
-  const buildingMeshRef = useRef<Mesh>(null);
-
   function handlePointerDown(event: any) {
     event.stopPropagation();
     onSelectTile(tile.x, tile.y);
@@ -34,7 +31,6 @@ export function CityTile({
     <group>
       {/* Terreno */}
       <mesh
-        ref={grassMeshRef}
         position={getAdjustedPosition(position, getAsset("grass").position)}
         onPointerDown={handlePointerDown}
         castShadow
@@ -56,7 +52,6 @@ export function CityTile({
         return (
           <mesh
             key={id}
-            // ref={buildingMeshRef} // Removed for consistency
             position={getAdjustedPosition(position, asset.position)}
             onPointerDown={handlePointerDown}
             castShadow
@@ -73,14 +68,11 @@ export function CityTile({
           </mesh>
         );
       })}
-
-      {/* Renderiza o asset */}
+    
       <RenderAsset
         assetId={tile.building?.id ?? ""}
-        position={position} // aqui você passa a posição do tile
-        selected={selected} // boolean que indica se está selecionado
-        buildingMeshRef={buildingMeshRef} // o ref que você usa para o mesh ou grupo
-        handlePointerDown={handlePointerDown} // sua função de clique
+        position={position} 
+        handlePointerDown={handlePointerDown}
       />
     </group>
   );

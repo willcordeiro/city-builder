@@ -18,6 +18,15 @@ const assets: { [key: string]: Asset } = {
     scale: 8,
     rotation: 0,
   },
+  constructionSmall: {
+    id: "constructionSmall",
+    args: [0.8, 1, 0.8],
+    color: "#27ae60",
+    position: [0, 0, 2],
+    filename: "construction-small.glb",
+    scale: 15,
+    rotation: 0,
+  },
   // Residencial
   residential: {
     id: "residential",

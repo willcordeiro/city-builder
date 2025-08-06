@@ -12,87 +12,44 @@ interface CityGridProps {
 }
 
 export function CityGrid({ size, selectedToolId }: CityGridProps) {
-  const city: City = useMemo(() => createCity(size), [size])
-  const [tick, setTick] = useState(0)
+  const city = useRef(createCity(size))
+
   const [selectedTile, setSelectedTile] = useState<{
     x: number
     y: number
   } | null>(null)
-  const toolRef = useRef<string | undefined>(selectedToolId)
-
-  useEffect(() => {
-    toolRef.current = selectedToolId
-  }, [selectedToolId])
-
-  // Efeito para o loop de atualização dos edifícios (crescimento dinâmico ao longo do tempo)
-  useEffect(() => {
-    const interval = setInterval(() => {
-      let changed = false
-      for (let x = 0; x < city.size; x++) {
-        for (let y = 0; y < city.size; y++) {
-          const tile = city.data[x][y]
-          if (tile.building) {
-            tile.building.update() // Chama a função de atualização do edifício
-            if (tile.building.updated) {
-              changed = true
-              tile.building.updated = false // Reseta a flag 'updated' após processar
-            }
-          }
-        }
-      }
-      if (changed) {
-        setTick((t) => t + 1) // Incrementa o tick para forçar a re-renderização se algo mudou
-      }
-    }, 1000) // Atualiza a cada 1000ms (1 segundo). Ajuste conforme necessário.
-
-    return () => clearInterval(interval) // Limpa o intervalo ao desmontar o componente
-  }, [city])
-
+ 
   const handleSelectTile = (x: number, y: number) => {
     setSelectedTile({ x, y })
-    const currentTool = toolRef.current
+    const currentTool = selectedToolId
 
     if (currentTool && currentTool === "bulldoze") {
-      // Lógica para a ferramenta "bulldoze"
-      if (city.data[x][y].building) {
-        city.data[x][y].building = undefined // Remove o edifício
+      if (city.current.data[x][y].building) {
+        city.current.data[x][y].building = undefined // Remove o edifício
       }
-      setTick((t) => t + 1)
     } else if (currentTool && buildingFactory[currentTool]) {
-      // Lógica para ferramentas de construção (residential, commercial, industrial, road)
-      const existingBuilding = city.data[x][y].building
+      const existingBuilding = city.current.data[x][y].building
 
-      // Se não há edifício ou o edifício existente é de um tipo diferente
       if (!existingBuilding || existingBuilding.id !== currentTool) {
         const newBuilding = buildingFactory[currentTool]()
 
-        // Aumenta a altura imediatamente ao colocar o edifício, conforme solicitado
-        // Garante que não exceda a altura máxima definida no building-constants (ex: 5)
-        if (newBuilding.height < 5) {
-          // Verifica se ainda pode crescer
-          newBuilding.height += 1 // Aumenta a altura em 1 (ex: de 1 para 2)
-        }
-        newBuilding.updated = true // Marca como atualizado para garantir re-renderização imediata
-
-        city.data[x][y].building = newBuilding
-        setTick((t) => t + 1) // Força a re-renderização
+        city.current.data[x][y].building = newBuilding // Adiciona o novo edifício
       }
-      // Se o mesmo tipo de edifício for clicado novamente, não faz nada aqui.
-      // O crescimento contínuo será tratado pelo loop de atualização do useEffect.
     }
   }
 
-  const tiles = useMemo(() => {
+  const Tiles = () => {
     const tileComponents = []
-    for (let x = 0; x < city.size; x++) {
-      for (let y = 0; y < city.size; y++) {
-        const tile = city.data[x][y]
+    for (let x = 0; x < city.current.size; x++) {
+      for (let y = 0; y < city.current.size; y++) {
+        const tile = city.current.data[x][y]
         const position: [number, number, number] = [x, 0, y] // Posição no grid 3D
         const isSelected = selectedTile !== null && selectedTile.x === x && selectedTile.y === y
-
+       
+        
         tileComponents.push(
           <CityTile
-            key={`tile-${x}-${y}-${tick}-${selectedToolId}`}// Adiciona 'tick' à chave para forçar re-renderização quando a altura do edifício muda
+            key={`tile-${x}-${y}`}
             tile={tile}
             position={position}
             terrainID={tile.terrainID}
@@ -104,7 +61,7 @@ export function CityGrid({ size, selectedToolId }: CityGridProps) {
       }
     }
     return tileComponents
-  }, [city, tick, selectedTile, selectedToolId]) // 'tick' é a dependência chave para re-renderizar quando os edifícios crescem
+  }
 
-  return <group>{tiles}</group>
+  return <Tiles/>
 }

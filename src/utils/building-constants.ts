@@ -10,6 +10,17 @@ interface BuildingFactory {
 }
 
 const buildingFactory: BuildingFactory = {
+    constructionSmall: () => ({
+    height: 1,
+    id: "constructionSmall",
+    updated: true,
+    update: function () {
+      if (Math.random() < 0.05 && this.height < 5) {
+        this.height++;
+        this.updated = true;
+      }
+    },
+  }),
   residential: () => ({
     height: 1,
     id: "residential",
