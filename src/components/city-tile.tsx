@@ -36,6 +36,12 @@ export function CityTile({
             handlePointerDown(e);
           }
         }}
+        onPointerMove={(e) => {
+          if (e.buttons === 1) {
+            // Verifica se o botão esquerdo do mouse está pressionado
+            handlePointerDown(e);
+          }
+        }}
         castShadow
         receiveShadow
       >
@@ -57,6 +63,11 @@ export function CityTile({
             key={id}
             position={getAdjustedPosition(position, asset.position)}
             onPointerDown={handlePointerDown}
+            onPointerMove={(e) => {
+              if (e.buttons === 1) {                
+                handlePointerDown(e);
+              }
+            }}
             castShadow
             receiveShadow
           >
