@@ -6,11 +6,11 @@ import { Suspense, useEffect, useState } from "react";
 import { CityGrid } from "@/components/city-grid";
 import { ToolbarSidebar } from "@/components/ToolbarSidebar";
 
-export default function Home() {
+export default function ThreeScene({ size }: { size: number }) {
   const [selectedToolId, setSelectedToolId] = useState<string | undefined>(
     "residential"
   );
-  const gridSize = 32;
+  const gridSize = size;
 
   function handleToolSelect(id: string | undefined) {
     setSelectedToolId(id);
@@ -35,7 +35,7 @@ export default function Home() {
         }}
       >
         <Suspense fallback={null}>
-          <CityGrid size={gridSize} selectedToolId={selectedToolId} />
+          <CityGrid selectedToolId={selectedToolId} />
 
           {/* Plano invisível que recebe sombra */}
           <mesh
