@@ -89,9 +89,10 @@ export function CityGrid({ size, selectedToolId }: CityGridProps) {
         const tile = city.data[x][y]
         const position: [number, number, number] = [x, 0, y] // Posição no grid 3D
         const isSelected = selectedTile !== null && selectedTile.x === x && selectedTile.y === y
+
         tileComponents.push(
           <CityTile
-            key={`tile-${x}-${y}-${tick}`} // Adiciona 'tick' à chave para forçar re-renderização quando a altura do edifício muda
+            key={`tile-${x}-${y}-${tick}-${selectedToolId}`}// Adiciona 'tick' à chave para forçar re-renderização quando a altura do edifício muda
             tile={tile}
             position={position}
             terrainID={tile.terrainID}

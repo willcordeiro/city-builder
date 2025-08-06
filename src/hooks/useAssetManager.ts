@@ -17,7 +17,7 @@ function getTexture(path: string): THREE.Texture {
   return textureCache.get(path)!;
 }
 
-export function useAsset(name: keyof typeof models) {
+export function useAsset(name: keyof typeof models ) {
   const { filename, scale = 1, rotation = 0 } = models[name];
 
   // useLoader handles caching of the GLTF data itself.

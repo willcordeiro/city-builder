@@ -1,17 +1,19 @@
-"use client"
+"use client";
 
-import { Canvas } from "@react-three/fiber"
-import { OrbitControls, Environment } from "@react-three/drei"
-import { Suspense, useState } from "react"
-import { CityGrid } from "@/components/city-grid"
-import { ToolbarSidebar } from "@/components/ToolbarSidebar"
+import { Canvas } from "@react-three/fiber";
+import { OrbitControls, Environment } from "@react-three/drei";
+import { Suspense, useEffect, useState } from "react";
+import { CityGrid } from "@/components/city-grid";
+import { ToolbarSidebar } from "@/components/ToolbarSidebar";
 
 export default function Home() {
-  const [selectedToolId, setSelectedToolId] = useState<string | undefined>("residential")
-  const gridSize = 32
+  const [selectedToolId, setSelectedToolId] = useState<string | undefined>(
+    "residential"
+  );
+  const gridSize = 32;
 
   function handleToolSelect(id: string | undefined) {
-    setSelectedToolId(id)
+    setSelectedToolId(id);
   }
 
   return (
@@ -19,7 +21,10 @@ export default function Home() {
       <ToolbarSidebar onSelect={handleToolSelect} selectedId={selectedToolId} />
       <Canvas
         shadows
-        camera={{ position: [gridSize * 1.5, gridSize * 1.5, gridSize * 1.5], fov: 60 }}
+        camera={{
+          position: [gridSize * 1.5, gridSize * 1.5, gridSize * 1.5],
+          fov: 60,
+        }}
         style={{
           position: "fixed",
           top: 0,
@@ -64,5 +69,5 @@ export default function Home() {
         </Suspense>
       </Canvas>
     </>
-  )
+  );
 }
