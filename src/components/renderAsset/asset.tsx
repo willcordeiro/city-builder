@@ -19,14 +19,14 @@ function Asset({ asset, position, handlePointerDown }: AssetProps) {
   const y = position[2] // Grid Y (using Z for grid Y in 3D space)
 
   // Ensure currentAsset is always up-to-date with the latest city state
-  const currentAsset = city.data[x]?.[y]
+  const currentAsset = city.data[x][y]
 
   // Load models
   const model = useAsset(asset.id)
   const modelLoading = useAsset("constructionSmall")
 
   useEffect(() => {
-    if (currentAsset && currentAsset.loading) {
+    if (currentAsset.loading) {
       const timeout = setTimeout(() => {
         // Update the loading state via the context function
         updateAssetLoading(x, y, false)
@@ -37,7 +37,7 @@ function Asset({ asset, position, handlePointerDown }: AssetProps) {
   }, [currentAsset?.loading, x, y, updateAssetLoading]) // Dependencies: re-run if loading state or position changes
 
   // Determine which model to display based on loading state
-  const activeModel = currentAsset && currentAsset.loading ? modelLoading : model
+  const activeModel = currentAsset.loading ? modelLoading : model
 
   // Render a single group and primitive, changing only the object prop
   if (!currentAsset) return null // Handle cases where currentAsset might be undefined
@@ -57,6 +57,5 @@ function Asset({ asset, position, handlePointerDown }: AssetProps) {
 
 export default Asset
 
-//todo buildings appear all at once if other building is loading
-//todo render system flicking while placing buildings
-//todo render sustem have a tick rate which is not the best way to do it
+//todo BUILDING placing sounds
+//todo building placing animation (like a bounce or fade-in)

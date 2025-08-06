@@ -2,7 +2,7 @@
 
 import { City } from "@/types/city"
 import { createCity } from "@/utils/city-generator"
-import { createContext, PropsWithChildren, useState, useCallback, useContext } from "react"
+import { createContext, PropsWithChildren, useState, useCallback } from "react"
 
 interface ICityContext {
   city: City
@@ -43,13 +43,4 @@ export default function CityProvider({ size, children }: PropsWithChildren<CityP
       {children}
     </CityContext.Provider>
   )
-}
-
-// Custom hook to consume the CityContext
-export function useCity() {
-  const context = useContext(CityContext)
-  if (context === undefined) {
-    throw new Error('useCity must be used within a CityProvider')
-  }
-  return context
 }

@@ -8,22 +8,33 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Home, Store, Factory, Car, Trash2, XCircle, Camera, CameraOff } from 'lucide-react'; // Import CameraOff icon
+import {
+  Home,
+  Store,
+  Factory,
+  Car,
+  Trash2,
+  XCircle,
+  Camera,
+  CameraOff,
+  RefreshCcw, // ícone para resetar a câmera
+} from "lucide-react";
 
 interface CityBuilderToolbarProps {
-  onSelect: (id?: string | undefined) => void; // id opcional, para limpar seleção
+  onSelect: (id?: string | undefined) => void;
   selectedId?: string;
-  onToggleIsometric: () => void; // Renamed prop for toggling isometric view
-  isIsometricActive: boolean; // New prop to indicate if isometric view is active
+  onToggleIsometric: () => void;
+  isIsometricActive: boolean;
+  onResetCamera: () => void; // 🆕 nova prop
 }
 
 export function ToolbarSidebar({
   onSelect,
   selectedId,
-  onToggleIsometric, // Destructure new prop
-  isIsometricActive, // Destructure new prop
+  onToggleIsometric,
+  isIsometricActive,
+  onResetCamera,
 }: CityBuilderToolbarProps) {
-  // Define os itens da barra de ferramentas com seus ícones e sub-opções
   const toolbarItems = [
     {
       id: "residential",
@@ -66,21 +77,26 @@ export function ToolbarSidebar({
       icon: Trash2,
     },
     {
-      id: "camera-toggle", // Changed ID to be more generic for toggle
-      label: isIsometricActive ? "Visão Normal" : "Visão Isométrica", // Change label based on state
-      icon: isIsometricActive ? CameraOff : Camera, // Change icon based on state
-      action: onToggleIsometric, // Direct action for this button
+      id: "camera-toggle",
+      label: isIsometricActive ? "Visão Normal" : "Visão Isométrica",
+      icon: isIsometricActive ? CameraOff : Camera,
+      action: onToggleIsometric,
+    },
+    {
+      id: "reset-camera",
+      label: "Resetar Câmera",
+      icon: RefreshCcw,
+      action: onResetCamera,
     },
   ];
 
   return (
     <Card className="fixed bottom-4 left-1/2 -translate-x-1/2 p-3 z-10 flex flex-row gap-2 items-center shadow-lg">
       {toolbarItems.map((item) => {
-        // Check if any sub-item of this group is selected (or the item itself if no sub-options)
         const isSelected = item.subOptions
           ? item.subOptions.some((sub) => sub.id === selectedId)
           : item.id === selectedId;
-        // Define the main button variant, applying 'destructive' for 'Demolir' if selected
+
         const buttonVariant =
           item.id === "bulldoze" && isSelected
             ? "destructive"
@@ -89,12 +105,11 @@ export function ToolbarSidebar({
             : "outline";
 
         if (item.action) {
-          // Render a simple button for direct actions like camera change
           return (
             <Button
               key={item.id}
-              onClick={item.action} // Call the direct action
-              variant={item.id === "camera-toggle" && isIsometricActive ? "default" : "outline"} // Highlight if active
+              onClick={item.action}
+              variant={item.id === "camera-toggle" && isIsometricActive ? "default" : "outline"}
               size="icon"
               className="flex flex-col h-auto w-auto p-3"
             >
@@ -102,31 +117,28 @@ export function ToolbarSidebar({
             </Button>
           );
         } else if (!item.subOptions) {
-          // Render a simple button if no sub-options
           return (
             <Button
               key={item.id}
               onClick={() => onSelect(item.id)}
               variant={buttonVariant}
               size="icon"
-              className="flex flex-col h-auto w-auto p-3" // Aumenta o padding do botão
+              className="flex flex-col h-auto w-auto p-3"
             >
-              <item.icon className="h-6 w-6" />{" "}
-              {/* Aumenta o tamanho do ícone */}
+              <item.icon className="h-6 w-6" />
             </Button>
           );
         }
-        // Render a DropdownMenu if there are sub-options
+
         return (
           <DropdownMenu key={item.id}>
             <DropdownMenuTrigger asChild>
               <Button
                 variant={buttonVariant}
                 size="icon"
-                className="flex flex-col h-auto w-auto p-3" // Aumenta o padding do botão
+                className="flex flex-col h-auto w-auto p-3"
               >
-                <item.icon className="h-6 w-6" />{" "}
-                {/* Aumenta o tamanho do ícone */}
+                <item.icon className="h-6 w-6" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent side="top" align="center">
@@ -147,14 +159,13 @@ export function ToolbarSidebar({
           </DropdownMenu>
         );
       })}
-      {/* Button to clear selection */}
       <Button
         onClick={() => onSelect(undefined)}
         variant="secondary"
         size="icon"
-        className="flex flex-col h-auto w-auto p-3 ml-4" // Aumenta o padding do botão
+        className="flex flex-col h-auto w-auto p-3 ml-4"
       >
-        <XCircle className="h-6 w-6" /> {/* Aumenta o tamanho do ícone */}
+        <XCircle className="h-6 w-6" />
       </Button>
     </Card>
   );

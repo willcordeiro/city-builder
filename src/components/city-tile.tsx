@@ -1,6 +1,4 @@
 "use client";
-import { useRef } from "react";
-import type { Mesh } from "three";
 import type { Tile } from "@/types/city";
 import { getAsset } from "@/utils/getAsset";
 import assets from "@/utils/assets";
@@ -33,7 +31,11 @@ export function CityTile({
       {/* Terreno */}
       <mesh
         position={getAdjustedPosition(position, getAsset("grass").position)}
-        onPointerDown={handlePointerDown}
+        onPointerDown={(e) => {
+          if (e.button === 0) {
+            handlePointerDown(e);
+          }
+        }}
         castShadow
         receiveShadow
       >
@@ -69,10 +71,10 @@ export function CityTile({
           </mesh>
         );
       })}
-    
+
       <RenderAsset
         assetId={tile.building?.id ?? ""}
-        position={position} 
+        position={position}
         handlePointerDown={handlePointerDown}
       />
     </group>
