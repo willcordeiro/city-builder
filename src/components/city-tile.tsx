@@ -1,5 +1,4 @@
 "use client";
-
 import { useRef } from "react";
 import type { Mesh } from "three";
 import type { Tile } from "@/types/city";
@@ -22,12 +21,15 @@ export function CityTile({
   onSelectTile,
 }: CityTileProps) {
   const grassMeshRef = useRef<Mesh>(null);
-  const buildingMeshRef = useRef<Mesh>(null);
+  // The buildingMeshRef is not strictly necessary here if you're not directly manipulating the mesh after creation.
+  // const buildingMeshRef = useRef<Mesh>(null);
 
   const residentialMesh = useAsset("residential");
   const commercialMesh = useAsset("commercial");
   const industrialMesh = useAsset("industrial");
-  const roadMesh = useAsset("road");
+  // The road is a simple box, so useAsset for it might be overkill or misconfigured if useAsset is strictly for GLTF.
+  // The current code correctly renders road as a boxGeometry, so roadMesh from useAsset is not used for it.
+  // const roadMesh = useAsset("road");
 
   function handlePointerDown(event: any) {
     event.stopPropagation();
@@ -39,8 +41,8 @@ export function CityTile({
   }
 
   function getColorForBuilding(buildingId: string): number {
-    const asset = assets[buildingId];
-    if (!asset) return 0xaaaaaa;
+    const asset = assets[buildingId as keyof typeof assets];
+    if (!asset || !asset.color) return 0xaaaaaa;
     return Number.parseInt(asset.color.replace("#", "0x"));
   }
 
@@ -75,26 +77,27 @@ export function CityTile({
       {["residential", "commercial", "industrial"].map((id) => {
         if (tile.building?.id !== id) return null;
 
-        const asset = assets[id];
-        const model = {
-          residential: residentialMesh,
-          commercial: commercialMesh,
-          industrial: industrialMesh,
-        }[id];
+        const asset = assets[id as keyof typeof assets];
+        let model: any = null;
+
+        if (id === "residential") model = residentialMesh;
+        else if (id === "commercial") model = commercialMesh;
+        else if (id === "industrial") model = industrialMesh;
 
         if (!model) return null;
 
         return (
           <group
             key={id}
-            ref={buildingMeshRef}
+            // ref={buildingMeshRef} // Removed as it's not strictly needed and can be confusing with multiple potential buildings
             position={getAdjustedPosition(position, asset.position)}
             scale={[0.25, 0.25, 0.25]}
             onPointerDown={handlePointerDown}
-            castShadow
-            receiveShadow
+            castShadow // These are typically set on the meshes within the GLTF model itself
+            receiveShadow // but can be overridden here.
           >
-            <primitive object={model.clone(true)} />
+            {/* IMPORTANT FIX: Pass the memoized model directly. Do NOT clone here. */}
+            <primitive object={model} />
           </group>
         );
       })}
@@ -102,12 +105,11 @@ export function CityTile({
       {/* Construção simples (ex: estrada) */}
       {["road"].map((id) => {
         if (tile.building?.id !== id) return null;
-        const asset = assets[id];
-
+        const asset = assets[id as keyof typeof assets];
         return (
           <mesh
             key={id}
-            ref={buildingMeshRef}
+            // ref={buildingMeshRef} // Removed for consistency
             position={getAdjustedPosition(position, asset.position)}
             onPointerDown={handlePointerDown}
             castShadow
