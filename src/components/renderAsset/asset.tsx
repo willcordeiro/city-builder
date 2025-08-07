@@ -14,7 +14,6 @@ interface AssetProps {
 
 function Asset({ asset, position, handlePointerDown }: AssetProps) {
   const { city, updateAssetLoading } = useCity();
-  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const x = position[0];
   const y = position[2];
@@ -23,19 +22,11 @@ function Asset({ asset, position, handlePointerDown }: AssetProps) {
   const model = useAsset(asset.id);
   const modelLoading = useAsset("constructionSmall");
 
-  // Inicializa o áudio
-  useEffect(() => {
-    audioRef.current = new Audio("/sounds/placing.mp3");
-  }, []);
+
 
   useEffect(() => {
     if (currentAsset?.loading) {
-      if (audioRef.current) {
-        audioRef.current.currentTime = 0;
-        audioRef.current.volume = 0.05;
-        audioRef.current.play();
-      }
-
+   
       const timeout = setTimeout(() => {
         updateAssetLoading(x, y, false);
       }, 3000);
