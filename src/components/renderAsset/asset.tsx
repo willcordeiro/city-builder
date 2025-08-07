@@ -38,8 +38,8 @@ function Asset({ asset, position, handlePointerDown }: AssetProps) {
   const activeModel = currentAsset?.loading ? modelLoading : model;
 
   const { scale } = useSpring({
-    scale: !currentAsset?.loading ? [0.25, 0.25, 0.25] : [0.25, 0.25, 0.25],
-    from: !currentAsset?.loading ? { scale: [0, 0, 0] } : undefined,
+    scale: currentAsset?.loading ? [0.25, 0.25, 0.25] : [0.25, 0.25, 0.25],
+    from: currentAsset?.loading ? { scale: [0, 0, 0] } : undefined,
     config: { tension: 300, friction: 10 },
     delay: 50,
   });
