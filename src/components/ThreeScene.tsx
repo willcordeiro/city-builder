@@ -16,7 +16,7 @@ export default function ThreeScene({ size }: { size: number }) {
     "residential"
   );
   const [isIsometric, setIsIsometric] = useState(false);
-  const cameraControlsRef = useRef<CameraControlsHandle>(null); // ✨
+  const cameraControlsRef = useRef<CameraControlsHandle>(null); 
 
   const gridSize = size;
   const gridCenter = new THREE.Vector3(

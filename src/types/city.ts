@@ -13,6 +13,8 @@ export interface Tile {
 }
 
 export interface City {
+  width: number;
+  height: number;
   size: number;
   data: Tile[][];
 }

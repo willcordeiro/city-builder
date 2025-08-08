@@ -18,90 +18,84 @@ export function RoadTile({ position, handlePointerDown }: RoadTileProps) {
   const [style, setStyle] = useState("roadStraight");
   const [rotationY, setRotationY] = useState(0);
 
-  const { gridX, gridY } = useMemo(() => ({
-    gridX: position[0],
-    gridY: position[2]
-  }), [position]);
+  const { gridX, gridY } = useMemo(
+    () => ({
+      gridX: Math.round(position[0]),
+      gridY: Math.round(position[2]),
+    }),
+    [position]
+  );
 
-  const isRoad = useCallback((x: number, y: number) => {
-    if (!city?.data || y < 0 || x < 0 || y >= city.data.length || x >= city.data[0]?.length) {
-      return false;
-    }
-    return city.data[y][x]?.building?.id === "road";
-  }, [city]);
+  const isRoad = useCallback(
+    (x: number, y: number) => {
+      if (!city?.data) return false;
+      if (x < 0 || y < 0 || x >= city.width || y >= city.height) return false;
+
+      const tile = city.data[x][y];
+      return tile?.building?.id === "road";
+    },
+    [city]
+  );
 
   useEffect(() => {
     if (!city?.data) return;
 
-    // Check adjacent tiles - note the y/x order matches your working example
     const top = isRoad(gridX, gridY - 1);
     const bottom = isRoad(gridX, gridY + 1);
     const left = isRoad(gridX - 1, gridY);
     const right = isRoad(gridX + 1, gridY);
 
-    console.log(`Road at ${gridX},${gridY} connections:`, {top, bottom, left, right});
-
-    // Match the exact logic from your working vanilla JS example
     let selectedStyle = "roadStraight";
     let rotation = 0;
 
-    // Four-way intersection
-    if (top && bottom && left && right) {
-      selectedStyle = "roadFourWay";
-      rotation = 0;
-    } 
-    // T intersection
-    else if (!top && bottom && left && right) { // bottom-left-right
-      selectedStyle = "roadThreeWay";
-      rotation = 0;
-    } else if (top && !bottom && left && right) { // top-left-right
-      selectedStyle = "roadThreeWay";
-      rotation = Math.PI; // 180 degrees in radians
-    } else if (top && bottom && !left && right) { // top-bottom-right
-      selectedStyle = "roadThreeWay";
-      rotation = Math.PI / 2; // 90 degrees in radians
-    } else if (top && bottom && left && !right) { // top-bottom-left
-      selectedStyle = "roadThreeWay";
-      rotation = (3 * Math.PI) / 2; // 270 degrees in radians
-    } 
-    // Corner
-    else if (top && !bottom && left && !right) { // top-left
-      selectedStyle = "roadCorner";
-      rotation = Math.PI; // 180 degrees
-    } else if (top && !bottom && !left && right) { // top-right
-      selectedStyle = "roadCorner";
-      rotation = Math.PI / 2; // 90 degrees
-    } else if (!top && bottom && left && !right) { // bottom-left
-      selectedStyle = "roadCorner";
-      rotation = (3 * Math.PI) / 2; // 270 degrees
-    } else if (!top && bottom && !left && right) { // bottom-right
-      selectedStyle = "roadCorner";
-      rotation = 0;
-    } 
-    // Straight
-    else if (top && bottom && !left && !right) { // top-bottom
-      selectedStyle = "roadStraight";
-      rotation = 0;
-    } else if (!top && !bottom && left && right) { // left-right
-      selectedStyle = "roadStraight";
-      rotation = Math.PI / 2; // 90 degrees
-    } 
-    // Dead end
-    else if (top && !bottom && !left && !right) { // top
-      selectedStyle = "roadEnd";
-      rotation = Math.PI; // 180 degrees
-    } else if (!top && bottom && !left && !right) { // bottom
-      selectedStyle = "roadEnd";
-      rotation = 0;
-    } else if (!top && !bottom && left && !right) { // left
-      selectedStyle = "roadEnd";
-      rotation = (3 * Math.PI) / 2; // 270 degrees
-    } else if (!top && !bottom && !left && right) { // right
-      selectedStyle = "roadEnd";
-      rotation = Math.PI / 2; // 90 degrees
+    const connections = [top, right, bottom, left];
+    const connectionCount = connections.filter(Boolean).length;
+
+    switch (connectionCount) {
+      case 4:
+        selectedStyle = "roadFourWay";
+        break;
+      case 3:
+        selectedStyle = "roadThreeWay";
+        if (!top) rotation = 0;
+        else if (!right) rotation = -Math.PI / 2;
+        else if (!bottom) rotation = Math.PI;
+        else rotation = -(3 * Math.PI) / 2;
+        break;
+      case 2:
+        if (top && bottom) {
+          selectedStyle = "roadStraight";
+          rotation = 0;
+        } else if (left && right) {
+          selectedStyle = "roadStraight";
+          rotation = Math.PI / 2;
+        } else {
+          selectedStyle = "roadCorner";
+          if (top && right) rotation = Math.PI / 2; // curva conecta topo + direita
+          else if (right && bottom)
+            rotation = (20 * Math.PI) / 2; // conecta direita + baixo
+          else if (bottom && left)
+            rotation = (6 * Math.PI) / 4; // conecta baixo + esquerda
+          else if (left && top) rotation = (-6 * Math.PI) / 2; // conecta esquerda + topo
+        }
+        break;
+      case 1:
+        selectedStyle = "roadEnd";
+        if (top) rotation = Math.PI;
+        else if (right) rotation = Math.PI / 2;
+        else if (bottom) rotation = Math.PI / 2 + Math.PI / -2;
+        else rotation = (3 * Math.PI) / 2;
+        break;
     }
 
-    // Only update if changed
+    console.log(
+    `Tile X:${gridX}, Y:${gridY} | tipo: ${selectedStyle} | lados conectados: ${
+      top ? "top " : ""
+    }${right ? "right " : ""}${bottom ? "bottom " : ""}${
+      left ? "left" : ""
+    } | rotação: ${rotation}`
+  );
+
     if (style !== selectedStyle || rotationY !== rotation) {
       setStyle(selectedStyle);
       setRotationY(rotation);
@@ -110,7 +104,9 @@ export function RoadTile({ position, handlePointerDown }: RoadTileProps) {
 
   const model = useAsset(style);
 
-  if (!model) return null;
+  if (!model) {
+    return null; // Retorno explícito quando não há modelo
+  }
 
   const { scale } = useSpring({
     scale: [0.25, 0.5, 0.25],
@@ -121,6 +117,7 @@ export function RoadTile({ position, handlePointerDown }: RoadTileProps) {
   const basePosition = getAdjustedPosition(position, getAsset(style).position);
   basePosition[1] += 0.2;
 
+  // Retorno JSX explícito do componente
   return (
     <a.group
       position={basePosition}

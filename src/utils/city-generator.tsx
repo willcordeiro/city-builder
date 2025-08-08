@@ -1,7 +1,7 @@
-import type { City, Tile } from "@/types/city"
+import type { City, Tile } from "@/types/city";
 import { v4 as uuidv4 } from "uuid";
 
-export function createCity(size: number): City {
+export function createCity(size:number): City {
   const data: Tile[][] = [];
 
   function createTile(x: number, y: number): Tile {
@@ -10,7 +10,7 @@ export function createCity(size: number): City {
       loading: false,
       x,
       y,
-      building:undefined,
+      building: undefined,
       selected: null,
       terrainID: "grass",
     };
@@ -26,10 +26,12 @@ export function createCity(size: number): City {
     }
   }
 
-  initialize()
+  initialize();
 
   return {
-  size,
-  data,
-}
+    width:size,
+    height:size,
+    size,
+    data,
+  };
 }

@@ -6,6 +6,7 @@ import { lightenColor, getColorForBuilding } from "@/utils/colorUtils";
 import { getAdjustedPosition } from "@/utils/positionUtils";
 import RenderAsset from "./renderAsset";
 import { RoadTile } from "./RoadTile";
+import { FloatingLabel } from "./FloatingLabel";
 
 
 interface CityTileProps {
@@ -60,23 +61,7 @@ export function CityTile({
       />
     </mesh>
 
-    <group position={[position[0], position[1] + 1, position[2]]}>
-      {/* Fundo branco */}
-      <mesh position={[0, 0, -0.01]} /* levemente atrás do texto */>
-        <planeGeometry args={[1.2, 0.25]} />
-        <meshBasicMaterial color="white" transparent opacity={0.4} />
-      </mesh>
-
-      {/* Texto */}
-      <Text
-        color="black"
-        fontSize={0.1}
-        anchorX="center"
-        anchorY="middle"
-      >
-        {`x: ${position[0]}, y: ${position[2]}`}
-      </Text>
-    </group>
+    <FloatingLabel position={position} />
 
     {tile.building?.id === "road" && (
       <RoadTile
