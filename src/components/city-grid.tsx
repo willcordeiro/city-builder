@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { CityTile } from "./city-tile";
 import assets from "@/utils/assets";
 import useCity from "@/hooks/useCity";
-import { Directions } from "./DirectionsArrows";
+// import { Directions } from "./DirectionsArrows";
 
 interface CityGridProps {
   selectedToolId?: string;
@@ -67,7 +67,7 @@ export function CityGrid({ selectedToolId }: CityGridProps) {
 
   return <> 
   
-    <Directions position={[8, 3, 7]} />
+    {/* <Directions position={[8, 3, 7]} /> */}
     <Tiles />
   </>;
 }

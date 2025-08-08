@@ -1,7 +1,7 @@
 import { useAsset } from "@/hooks/useAssetManager";
 import useCity from "@/hooks/useCity";
 import { getAdjustedPosition } from "@/utils/positionUtils";
-import { useEffect, useState, useRef } from "react";
+import { useEffect } from "react";
 import * as THREE from "three";
 import { Asset as AssetType } from "@/utils/assets";
 import { useSpring, a } from "@react-spring/three";

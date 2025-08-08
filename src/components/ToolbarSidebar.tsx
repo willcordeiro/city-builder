@@ -14,7 +14,6 @@ import {
   Factory,
   Car,
   Trash2,
-  XCircle,
   Camera,
   CameraOff,
   RefreshCcw, // ícone para resetar a câmera

@@ -1,15 +1,13 @@
 "use client";
 
 import { Canvas } from "@react-three/fiber";
-import { Environment } from "@react-three/drei";
-import { Suspense, useEffect, useRef, useState } from "react";
+import { Suspense,  useRef, useState } from "react";
 import { CityGrid } from "@/components/city-grid";
 import { ToolbarSidebar } from "@/components/ToolbarSidebar";
 import * as THREE from "three";
 import CameraControls, { CameraControlsHandle } from "./CameraControls";
-import Loader from "./loader";
 import { LocalEnvironment } from "./local-environment";
-import { Directions } from "./DirectionsArrows";
+
 
 export default function ThreeScene({ size }: { size: number }) {
   const [selectedToolId, setSelectedToolId] = useState<string | undefined>(

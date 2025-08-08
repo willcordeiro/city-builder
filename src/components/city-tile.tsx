@@ -1,12 +1,11 @@
 "use client";
 import type { Tile } from "@/types/city";
 import { getAsset } from "@/utils/getAsset";
-import { Text } from '@react-three/drei';
 import { lightenColor, getColorForBuilding } from "@/utils/colorUtils";
 import { getAdjustedPosition } from "@/utils/positionUtils";
 import RenderAsset from "./renderAsset";
 import { RoadTile } from "./RoadTile";
-import { FloatingLabel } from "./FloatingLabel";
+// import { FloatingLabel } from "./FloatingLabel";
 
 
 interface CityTileProps {
@@ -61,7 +60,7 @@ export function CityTile({
       />
     </mesh>
 
-    <FloatingLabel position={position} />
+    {/* <FloatingLabel position={position} /> */}
 
     {tile.building?.id === "road" && (
       <RoadTile

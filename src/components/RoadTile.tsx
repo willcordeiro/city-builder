@@ -88,13 +88,13 @@ export function RoadTile({ position, handlePointerDown }: RoadTileProps) {
         break;
     }
 
-    console.log(
-    `Tile X:${gridX}, Y:${gridY} | tipo: ${selectedStyle} | lados conectados: ${
-      top ? "top " : ""
-    }${right ? "right " : ""}${bottom ? "bottom " : ""}${
-      left ? "left" : ""
-    } | rotação: ${rotation}`
-  );
+  //   console.log(
+  //   `Tile X:${gridX}, Y:${gridY} | tipo: ${selectedStyle} | lados conectados: ${
+  //     top ? "top " : ""
+  //   }${right ? "right " : ""}${bottom ? "bottom " : ""}${
+  //     left ? "left" : ""
+  //   } | rotação: ${rotation}`
+  // );
 
     if (style !== selectedStyle || rotationY !== rotation) {
       setStyle(selectedStyle);
