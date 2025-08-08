@@ -102,7 +102,8 @@ export function RoadTile({ position, handlePointerDown }: RoadTileProps) {
     }
   }, [city, gridX, gridY, isRoad, style, rotationY]);
 
-  const model = useAsset(style);
+  const tile = city.data[gridX][gridY];
+  const model = useAsset(style,tile?.building?.id);
 
   if (!model) {
     return null; // Retorno explícito quando não há modelo
@@ -115,7 +116,7 @@ export function RoadTile({ position, handlePointerDown }: RoadTileProps) {
   });
 
   const basePosition = getAdjustedPosition(position, getAsset(style).position);
-  basePosition[1] += 0.2;
+  basePosition[1] += 0.02;
 
   // Retorno JSX explícito do componente
   return (
@@ -124,8 +125,8 @@ export function RoadTile({ position, handlePointerDown }: RoadTileProps) {
       rotation={[0, rotationY, 0]}
       scale={scale.to((x, y, z) => [x, y, z])}
       onPointerDown={handlePointerDown}
-      castShadow
-      receiveShadow
+      castShadow={false}
+      receiveShadow={false}
     >
       <primitive object={model} />
     </a.group>

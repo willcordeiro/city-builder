@@ -14,7 +14,7 @@ const assets: { [key: string]: Asset } = {
   grass: {
     id: "grass",
     args: [1, 1, 1],
-    color: "#7A874A",
+    color: "#BDDB87",
     position: [0, -0.5, 0],
     filename: "tile-grass.glb",
     scale: 1,
