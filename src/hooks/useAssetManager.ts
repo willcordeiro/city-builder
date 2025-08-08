@@ -23,23 +23,27 @@ Object.values(assets)
   });
 
 
-export function useAsset(name: keyof typeof assets ) {
-  const { filename, scale = 1, rotation = 0 } = assets[name];
+export function useAsset(name: keyof typeof assets, rotation?: number) {
+  const asset = assets[name] ?? null;
 
-  // useLoader handles caching of the GLTF data itself.
+  // Mesmo que o asset não exista, o hook precisa rodar:
+  const filename = asset?.filename ?? "";
+  const scale = asset?.scale ?? 1;
+  const defaultRotation = asset?.rotation ?? 0;
+  const finalRotation = rotation !== undefined ? rotation : defaultRotation;
+
   const gltf = useGLTF(`/assets/models/${filename}`);
+
   const mesh = useMemo(() => {
-    // Clone the scene from the loaded GLTF data.
-    // This clone happens once per useAsset call for a given filename/scale/rotation.
+    if (!asset || !gltf?.scene) return null;
+
     const cloned = gltf.scene.clone();
 
-    // Get textures from cache or load them
     const baseTexture = getTexture("/assets/textures/base.png");
     const specularTexture = getTexture("/assets/textures/specular.png");
 
     cloned.traverse((obj: any) => {
       if (obj.isMesh && obj.material) {
-        // Apply new Lambert material with cached textures
         obj.material = new THREE.MeshLambertMaterial({
           map: baseTexture,
           specularMap: specularTexture,
@@ -50,10 +54,12 @@ export function useAsset(name: keyof typeof assets ) {
     });
 
     cloned.scale.setScalar(scale / 30);
-    cloned.rotation.y = THREE.MathUtils.degToRad(rotation);
+    cloned.rotation.y = THREE.MathUtils.degToRad(finalRotation);
 
     return cloned;
-  }, [gltf, scale, rotation]); // Dependencies ensure this memo re-runs only if gltf, scale, or rotation changes.
+  }, [gltf, asset, scale, finalRotation]);
 
   return mesh;
 }
+
+

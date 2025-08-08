@@ -16,3 +16,11 @@ export interface City {
   size: number;
   data: Tile[][];
 }
+
+export type BuildingType =
+  | 'residential'
+  | 'commercial'
+  | 'industrial'
+  | 'road';
+
+export type CityGrid = City;

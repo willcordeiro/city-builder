@@ -2,20 +2,28 @@
 
 import { Canvas } from "@react-three/fiber";
 import { Environment } from "@react-three/drei";
-import { Suspense, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { CityGrid } from "@/components/city-grid";
 import { ToolbarSidebar } from "@/components/ToolbarSidebar";
 import * as THREE from "three";
 import CameraControls, { CameraControlsHandle } from "./CameraControls";
 import Loader from "./loader";
+import { LocalEnvironment } from "./local-environment";
+import { Directions } from "./DirectionsArrows";
 
 export default function ThreeScene({ size }: { size: number }) {
-  const [selectedToolId, setSelectedToolId] = useState<string | undefined>("residential");
+  const [selectedToolId, setSelectedToolId] = useState<string | undefined>(
+    "residential"
+  );
   const [isIsometric, setIsIsometric] = useState(false);
   const cameraControlsRef = useRef<CameraControlsHandle>(null); // ✨
 
   const gridSize = size;
-  const gridCenter = new THREE.Vector3(gridSize / 2 - 0.5, 0, gridSize / 2 - 0.5);
+  const gridCenter = new THREE.Vector3(
+    gridSize / 2 - 0.5,
+    0,
+    gridSize / 2 - 0.5
+  );
 
   const defaultFreeCameraPosition = new THREE.Vector3(
     gridCenter.x + gridSize * 1.2,
@@ -32,7 +40,7 @@ export default function ThreeScene({ size }: { size: number }) {
   };
 
   const resetCamera = () => {
-    cameraControlsRef.current?.resetCamera(); // ✨ chama a função do filho
+    cameraControlsRef.current?.resetCamera();
   };
 
   return (
@@ -42,7 +50,7 @@ export default function ThreeScene({ size }: { size: number }) {
         selectedId={selectedToolId}
         onToggleIsometric={toggleIsometricView}
         isIsometricActive={isIsometric}
-        onResetCamera={resetCamera} // ✨ passa pro botão
+        onResetCamera={resetCamera}
       />
       <Canvas
         shadows
@@ -59,8 +67,9 @@ export default function ThreeScene({ size }: { size: number }) {
           background: "linear-gradient(#6B96C9, #3D5D8D)",
         }}
       >
-       <Suspense fallback={null}>
+        <Suspense fallback={null}>
           <CityGrid selectedToolId={selectedToolId} />
+
           <mesh
             rotation={[-Math.PI / 2, 0, 0]}
             position={[gridSize / 2 - 0.5, -0.5, gridSize / 2 - 0.5]}
@@ -83,8 +92,12 @@ export default function ThreeScene({ size }: { size: number }) {
             shadow-camera-top={gridSize * 1.2}
             shadow-camera-bottom={-gridSize * 1.2}
           />
-          <Environment preset="city" />
-          <CameraControls ref={cameraControlsRef} center={gridCenter} isometricView={isIsometric} />
+          <LocalEnvironment />
+          <CameraControls
+            ref={cameraControlsRef}
+            center={gridCenter}
+            isometricView={isIsometric}
+          />
         </Suspense>
       </Canvas>
     </>

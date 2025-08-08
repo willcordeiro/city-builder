@@ -25,7 +25,7 @@ interface CityBuilderToolbarProps {
   selectedId?: string;
   onToggleIsometric: () => void;
   isIsometricActive: boolean;
-  onResetCamera: () => void; // 🆕 nova prop
+  onResetCamera: () => void;
 }
 
 export function ToolbarSidebar({

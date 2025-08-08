@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CityTile } from "./city-tile";
 import assets from "@/utils/assets";
 import useCity from "@/hooks/useCity";
+import { Directions } from "./DirectionsArrows";
 
 interface CityGridProps {
   selectedToolId?: string;
@@ -18,6 +19,7 @@ export function CityGrid({ selectedToolId }: CityGridProps) {
   } | null>(null);
 
   const handleSelectTile = (x: number, y: number) => {
+
     setSelectedTile({ x, y });
     const currentTool = selectedToolId;
 
@@ -63,5 +65,9 @@ export function CityGrid({ selectedToolId }: CityGridProps) {
     return tileComponents;
   };
 
-  return <Tiles />;
+  return <> 
+  
+    <Directions position={[8, 3, 7]} />
+    <Tiles />
+  </>;
 }

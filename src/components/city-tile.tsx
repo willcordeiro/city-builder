@@ -1,10 +1,12 @@
 "use client";
 import type { Tile } from "@/types/city";
 import { getAsset } from "@/utils/getAsset";
-import assets from "@/utils/assets";
+import { Text } from '@react-three/drei';
 import { lightenColor, getColorForBuilding } from "@/utils/colorUtils";
 import { getAdjustedPosition } from "@/utils/positionUtils";
 import RenderAsset from "./renderAsset";
+import { RoadTile } from "./RoadTile";
+
 
 interface CityTileProps {
   tile: Tile;
@@ -21,73 +23,74 @@ export function CityTile({
   selected,
   onSelectTile,
 }: CityTileProps) {
+
   function handlePointerDown(event: any) {
     event.stopPropagation();
     onSelectTile(tile.x, tile.y);
   }
 
+  
+  
   return (
     <group>
-      {/* Terreno */}
-      <mesh
-        position={getAdjustedPosition(position, getAsset("grass").position)}
-        onPointerDown={(e) => {
-          if (e.button === 0) {
-            handlePointerDown(e);
-          }
-        }}
-        onPointerMove={(e) => {
-          if (e.buttons === 1) {
-            // Verifica se o botão esquerdo do mouse está pressionado
-            handlePointerDown(e);
-          }
-        }}
-        castShadow
-        receiveShadow
-      >
-        <boxGeometry args={getAsset("grass").args} />
-        <meshLambertMaterial
-          color={
-            selected
-              ? lightenColor(getColorForBuilding("grass"))
-              : getColorForBuilding("grass")
-          }
-        />
+    {/* Terreno */}
+    <mesh
+      position={getAdjustedPosition(position, getAsset("grass").position)}
+      onPointerDown={(e) => {
+        if (e.button === 0) {
+          handlePointerDown(e);
+        }
+      }}
+      onPointerMove={(e) => {
+        if (e.buttons === 1) {
+          // Verifica se o botão esquerdo do mouse está pressionado
+          handlePointerDown(e);
+        }
+      }}
+      castShadow
+      receiveShadow
+    >
+      <boxGeometry args={getAsset("grass").args} />
+      <meshLambertMaterial
+        color={
+          selected
+            ? lightenColor(getColorForBuilding("grass"))
+            : getColorForBuilding("grass")
+        }
+      />
+    </mesh>
+
+    <group position={[position[0], position[1] + 1, position[2]]}>
+      {/* Fundo branco */}
+      <mesh position={[0, 0, -0.01]} /* levemente atrás do texto */>
+        <planeGeometry args={[1.2, 0.25]} />
+        <meshBasicMaterial color="white" transparent opacity={0.4} />
       </mesh>
 
-      {["road"].map((id) => {
-        if (tile.building?.id !== id) return null;
-        const asset = assets[id as keyof typeof assets];
-        return (
-          <mesh
-            key={id}
-            position={getAdjustedPosition(position, asset.position)}
-            onPointerDown={handlePointerDown}
-            onPointerMove={(e) => {
-              if (e.buttons === 1) {                
-                handlePointerDown(e);
-              }
-            }}
-            castShadow
-            receiveShadow
-          >
-            <boxGeometry args={asset.args} />
-            <meshLambertMaterial
-              color={
-                selected
-                  ? lightenColor(getColorForBuilding(id))
-                  : getColorForBuilding(id)
-              }
-            />
-          </mesh>
-        );
-      })}
+      {/* Texto */}
+      <Text
+        color="black"
+        fontSize={0.1}
+        anchorX="center"
+        anchorY="middle"
+      >
+        {`x: ${position[0]}, y: ${position[2]}`}
+      </Text>
+    </group>
 
-      <RenderAsset
-        assetId={tile.building?.id ?? ""}
+    {tile.building?.id === "road" && (
+      <RoadTile
         position={position}
         handlePointerDown={handlePointerDown}
       />
-    </group>
+    )}
+
+    <RenderAsset
+      assetId={tile.building?.id ?? ""}
+      position={position}
+      handlePointerDown={handlePointerDown}
+    />
+
+  </group>
   );
 }
