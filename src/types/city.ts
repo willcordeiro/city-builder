@@ -1,12 +1,12 @@
-import { Asset } from "@/utils/assets";
+import { Asset } from "./assets";
 
 export type Building = Asset;
 
 export interface Tile {
-  id:string;
+  id: string;
   x: number;
   y: number;
-  loading:boolean;
+  loading: boolean;
   building?: Building;
   terrainID: "grass";
   selected: boolean | null;
@@ -19,10 +19,6 @@ export interface City {
   data: Tile[][];
 }
 
-export type BuildingType =
-  | 'residential'
-  | 'commercial'
-  | 'industrial'
-  | 'road';
+export type BuildingType = "residential" | "commercial" | "industrial" | "road";
 
 export type CityGrid = City;
