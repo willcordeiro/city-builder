@@ -7,9 +7,11 @@ import * as THREE from "three";
 import CameraControls, { CameraControlsHandle } from "./CameraControls";
 import { LocalEnvironment } from "./local-environment";
 import { DayNightCycle } from "./DayNightCycle";
+import { Clouds } from "./cloud";
+import { RainController } from "./rainController";
 
 export default function ThreeScene({ size }: { size: number }) {
-  const cameraControlsRef = useRef<CameraControlsHandle>(null); 
+  const cameraControlsRef = useRef<CameraControlsHandle>(null);
   const [isNight, setIsNight] = useState(false);
 
   const gridSize = size;
@@ -44,16 +46,17 @@ export default function ThreeScene({ size }: { size: number }) {
           left: 0,
           width: "100vw",
           height: "100vh",
-          background: isNight 
-            ? "linear-gradient(#0a0a2a, #000000)" 
+          background: isNight
+            ? "linear-gradient(#0a0a2a, #000000)"
             : "linear-gradient(#6B96C9, #3D5D8D)",
         }}
       >
         <Suspense fallback={null}>
-          <CityGrid  />
-          <DayNightCycle 
-             speed={0.105}  // 1 minute for cicle
-            
+          <CityGrid />
+          <Clouds isNight={isNight} />
+          <RainController/>
+          <DayNightCycle
+            speed={0.03} 
           />
 
           <mesh
