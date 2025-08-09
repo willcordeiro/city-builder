@@ -1,9 +1,9 @@
 import ThreeScene from "@/components/ThreeScene";
-import CityProvider from "@/providers/cityProvider";
-import { ToolbarProvider } from "@/providers/toolbarProvider";
+import CityProvider from "@/providers/CityProvider";
+import { ToolbarProvider } from "@/providers/ToolbarProvider";
 
 export default function Home() {
-  const gridSize = 16; // Define o tamanho do grid
+  const gridSize = 16;
 
   return (
     <CityProvider size={gridSize}>

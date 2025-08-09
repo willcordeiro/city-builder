@@ -1,14 +1,14 @@
-"use client"
-import { Suspense } from "react"
-import { Environment, Sky } from "@react-three/drei"
-import * as THREE from "three"
+"use client";
+import { Suspense } from "react";
+import { Environment, Sky } from "@react-three/drei";
+import * as THREE from "three";
 
 type LocalEnvironmentProps = {
-  path?: string
-  background?: boolean
-  blur?: number
-  isNight?: boolean
-}
+  path?: string;
+  background?: boolean;
+  blur?: number;
+  isNight?: boolean;
+};
 
 export function LocalEnvironment({
   path = "/assets/textures/potsdamer_platz_1k.hdr",
@@ -16,43 +16,35 @@ export function LocalEnvironment({
   blur = 0.1,
   isNight = false,
 }: LocalEnvironmentProps) {
-  // Configurações diferentes para dia e noite
   const daySettings = {
-    skyColor: '#87CEEB',
+    skyColor: "#87CEEB",
     sunPosition: [10, 10, 10] as [number, number, number],
     inclination: 0.47,
     azimuth: 0.25,
     mieCoefficient: 0.02,
     rayleigh: 2,
-    turbidity: 8
-  }
+    turbidity: 8,
+  };
 
   const nightSettings = {
-    skyColor: '#0a0a2a',
+    skyColor: "#0a0a2a",
     sunPosition: [-10, -10, -10] as [number, number, number],
     inclination: 0.6,
     azimuth: 0.5,
     mieCoefficient: 0.005,
     rayleigh: 0.5,
-    turbidity: 2
-  }
+    turbidity: 2,
+  };
 
-  const currentSettings = isNight ? nightSettings : daySettings
+  const currentSettings = isNight ? nightSettings : daySettings;
 
   return (
-    <Suspense
-      fallback={
-        <Sky
-          {...currentSettings}
-        />
-      }
-    >
-      <Environment 
-        files={isNight ? undefined : path} // Desativa HDR à noite
+    <Suspense fallback={<Sky {...currentSettings} />}>
+      <Environment
+        files={isNight ? undefined : path}
         background={background}
         blur={blur}
       >
-        {/* Ambiente personalizado para noite */}
         {isNight && (
           <>
             <color attach="background" args={[nightSettings.skyColor]} />
@@ -62,5 +54,5 @@ export function LocalEnvironment({
         )}
       </Environment>
     </Suspense>
-  )
+  );
 }

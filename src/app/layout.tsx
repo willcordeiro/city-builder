@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "City Builder",
+  title: "Cord City",
   description: "Build your own city with a 3D city builder game",
 };
 

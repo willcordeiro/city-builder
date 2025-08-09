@@ -28,7 +28,6 @@ const CameraControls = forwardRef<CameraControlsHandle, CameraControlsProps>(
     const rotationSpeed = 0.005;
     const target = useRef<THREE.Vector3>(center);
 
-    // Expor função para resetar a câmera
     useImperativeHandle(ref, () => ({
       resetCamera: () => {
         if (!isIsometric) {

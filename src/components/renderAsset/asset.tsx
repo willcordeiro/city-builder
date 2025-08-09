@@ -3,10 +3,10 @@ import { useAsset } from "@/hooks/useAssetManager";
 import { getAdjustedPosition } from "@/utils/positionUtils";
 import { useEffect, useMemo } from "react";
 import * as THREE from "three";
-import { Asset as AssetType } from "@/utils/assets";
+import { Asset as AssetType } from "@/types/assets";
 import { useSpring, a } from "@react-spring/three";
 import useCity from "@/hooks/useCity";
-import SmokeParticles from "../smokingParticles";
+import SmokeParticles from "../SmokeParticles";
 
 interface AssetProps {
   asset: AssetType;

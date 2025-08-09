@@ -1,7 +1,6 @@
 "use client";
 import useCity from "@/hooks/useCity";
-import { CityTile } from "./city-tile";
-
+import { CityTile } from "./CityTile";
 import { useToolbar } from "@/hooks/useTollbar";
 import assets from "@/utils/assets";
 
@@ -11,7 +10,7 @@ export function CityGrid() {
 
   const handleSelectTile = (x: number, y: number) => {
     setSelectedTile({ x, y });
-    
+
     if (!selectedToolId) return;
 
     if (selectedToolId === "bulldoze") {

@@ -1,8 +1,7 @@
 "use client";
 import { getAsset } from "@/utils/getAsset";
 import * as THREE from "three";
-import Asset from "./asset";
-
+import Asset from "./Asset";
 
 interface RenderAssetProps {
   assetId: string;
@@ -10,9 +9,13 @@ interface RenderAssetProps {
   handlePointerDown: (event: THREE.Event) => void;
 }
 
-function RenderAsset({ assetId, position, handlePointerDown }: RenderAssetProps) {
+function RenderAsset({
+  assetId,
+  position,
+  handlePointerDown,
+}: RenderAssetProps) {
   const asset = getAsset(assetId);
-  
+
   if (!asset || asset.filename === "") return null;
 
   return (

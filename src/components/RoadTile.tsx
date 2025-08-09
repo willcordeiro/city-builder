@@ -71,12 +71,10 @@ export function RoadTile({ position, handlePointerDown }: RoadTileProps) {
           rotation = Math.PI / 2;
         } else {
           selectedStyle = "roadCorner";
-          if (top && right) rotation = Math.PI / 2; // curva conecta topo + direita
-          else if (right && bottom)
-            rotation = (20 * Math.PI) / 2; // conecta direita + baixo
-          else if (bottom && left)
-            rotation = (6 * Math.PI) / 4; // conecta baixo + esquerda
-          else if (left && top) rotation = (-6 * Math.PI) / 2; // conecta esquerda + topo
+          if (top && right) rotation = Math.PI / 2;
+          else if (right && bottom) rotation = (20 * Math.PI) / 2;
+          else if (bottom && left) rotation = (6 * Math.PI) / 4;
+          else if (left && top) rotation = (-6 * Math.PI) / 2;
         }
         break;
       case 1:
@@ -88,13 +86,13 @@ export function RoadTile({ position, handlePointerDown }: RoadTileProps) {
         break;
     }
 
-  //   console.log(
-  //   `Tile X:${gridX}, Y:${gridY} | tipo: ${selectedStyle} | lados conectados: ${
-  //     top ? "top " : ""
-  //   }${right ? "right " : ""}${bottom ? "bottom " : ""}${
-  //     left ? "left" : ""
-  //   } | rotação: ${rotation}`
-  // );
+    //   console.log(
+    //   `Tile X:${gridX}, Y:${gridY} | tipo: ${selectedStyle} | lados conectados: ${
+    //     top ? "top " : ""
+    //   }${right ? "right " : ""}${bottom ? "bottom " : ""}${
+    //     left ? "left" : ""
+    //   } | rotação: ${rotation}`
+    // );
 
     if (style !== selectedStyle || rotationY !== rotation) {
       setStyle(selectedStyle);
@@ -103,10 +101,10 @@ export function RoadTile({ position, handlePointerDown }: RoadTileProps) {
   }, [city, gridX, gridY, isRoad, style, rotationY]);
 
   const tile = city.data[gridX][gridY];
-  const model = useAsset(style,tile?.building?.id);
+  const model = useAsset(style, tile?.building?.id);
 
   if (!model) {
-    return null; // Retorno explícito quando não há modelo
+    return null;
   }
 
   const { scale } = useSpring({
@@ -118,7 +116,6 @@ export function RoadTile({ position, handlePointerDown }: RoadTileProps) {
   const basePosition = getAdjustedPosition(position, getAsset(style).position);
   basePosition[1] += 0.02;
 
-  // Retorno JSX explícito do componente
   return (
     <a.group
       position={basePosition}

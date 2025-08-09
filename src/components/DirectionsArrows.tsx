@@ -14,7 +14,6 @@ export function Directions({ position }: DirectionsProps) {
 
   return (
     <group position={position}>
-      {/* Esquerda */}
       <group position={[-2, 1, 0]} rotation={[0, Math.PI, 0]}>
         <mesh
           geometry={barGeometry}
@@ -39,7 +38,6 @@ export function Directions({ position }: DirectionsProps) {
         </Text>
       </group>
 
-      {/* Direita */}
       <group position={[2, 1, 0]}>
         <mesh
           geometry={barGeometry}
@@ -63,7 +61,6 @@ export function Directions({ position }: DirectionsProps) {
         </Text>
       </group>
 
-      {/* Cima */}
       <group position={[0, 3, 0]} rotation={[0, 0, -Math.PI / 2]}>
         <mesh
           geometry={barGeometry}
@@ -88,7 +85,6 @@ export function Directions({ position }: DirectionsProps) {
         </Text>
       </group>
 
-      {/* Baixo */}
       <group position={[0, -1, 0]} rotation={[0, 0, Math.PI / 2]}>
         <mesh
           geometry={barGeometry}

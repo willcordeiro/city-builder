@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { RainSystem } from "./rain";
+import { RainSystem } from "./RainSystem";
 
 export function RainController() {
   const [isRaining, setIsRaining] = useState(false);

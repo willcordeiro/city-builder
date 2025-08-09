@@ -1,14 +1,4 @@
-import * as THREE from "three";
-
-export interface Asset {
-  id: string;
-  args?: [number, number, number, number?, number?, number?];
-  color?: string;
-  position?: [number, number, number];
-  filename: string;
-  scale: number;
-  rotation: number;
-}
+import { Asset } from "@/types/assets";
 
 const assets: { [key: string]: Asset } = {
   grass: {

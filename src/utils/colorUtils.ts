@@ -1,4 +1,4 @@
-import { getAsset } from "./getAsset"; // importe se necessário
+import { getAsset } from "./getAsset";
 
 export function lightenColor(hex: number): number {
   return hex + 0x222222 > 0xffffff ? 0xffffff : hex + 0x222222;

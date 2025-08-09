@@ -1,14 +1,14 @@
 "use client";
 import { Canvas, useThree } from "@react-three/fiber";
 import { Suspense, useRef, useState, useEffect } from "react";
-import { CityGrid } from "@/components/city-grid";
+import { CityGrid } from "@/components/CityGrid";
 import { ToolbarSidebar } from "@/components/ToolbarSidebar";
 import * as THREE from "three";
 import CameraControls, { CameraControlsHandle } from "./CameraControls";
-import { LocalEnvironment } from "./local-environment";
+import { LocalEnvironment } from "./LocalEnvironment";
 import { DayNightCycle } from "./DayNightCycle";
-import { Clouds } from "./cloud";
-import { RainController } from "./rainController";
+import { Clouds } from "./Clouds";
+//import { RainController } from "./rainController";
 
 export default function ThreeScene({ size }: { size: number }) {
   const cameraControlsRef = useRef<CameraControlsHandle>(null);
@@ -54,10 +54,8 @@ export default function ThreeScene({ size }: { size: number }) {
         <Suspense fallback={null}>
           <CityGrid />
           <Clouds isNight={isNight} />
-          <RainController/>
-          <DayNightCycle
-            speed={0.03} 
-          />
+          {/* <RainController/> */}
+          <DayNightCycle speed={0.03} />
 
           <mesh
             rotation={[-Math.PI / 2, 0, 0]}
@@ -75,3 +73,7 @@ export default function ThreeScene({ size }: { size: number }) {
     </>
   );
 }
+
+//todo increase city cize with infinite map but limited
+//todo toolbar like cities skylines with models
+//todo add more models for building
