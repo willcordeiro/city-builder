@@ -1,16 +1,16 @@
 "use client";
-
-import { Canvas } from "@react-three/fiber";
-import { Suspense,  useRef, useState } from "react";
+import { Canvas, useThree } from "@react-three/fiber";
+import { Suspense, useRef, useState, useEffect } from "react";
 import { CityGrid } from "@/components/city-grid";
 import { ToolbarSidebar } from "@/components/ToolbarSidebar";
 import * as THREE from "three";
 import CameraControls, { CameraControlsHandle } from "./CameraControls";
 import { LocalEnvironment } from "./local-environment";
-
+import { DayNightCycle } from "./DayNightCycle";
 
 export default function ThreeScene({ size }: { size: number }) {
   const cameraControlsRef = useRef<CameraControlsHandle>(null); 
+  const [isNight, setIsNight] = useState(false);
 
   const gridSize = size;
   const gridCenter = new THREE.Vector3(
@@ -31,9 +31,7 @@ export default function ThreeScene({ size }: { size: number }) {
 
   return (
     <>
-      <ToolbarSidebar
-        onResetCamera={resetCamera}
-      />
+      <ToolbarSidebar onResetCamera={resetCamera} />
       <Canvas
         shadows
         camera={{
@@ -46,11 +44,17 @@ export default function ThreeScene({ size }: { size: number }) {
           left: 0,
           width: "100vw",
           height: "100vh",
-          background: "linear-gradient(#6B96C9, #3D5D8D)",
+          background: isNight 
+            ? "linear-gradient(#0a0a2a, #000000)" 
+            : "linear-gradient(#6B96C9, #3D5D8D)",
         }}
       >
         <Suspense fallback={null}>
-          <CityGrid />
+          <CityGrid  />
+          <DayNightCycle 
+             speed={0.105}  // 1 minute for cicle
+            
+          />
 
           <mesh
             rotation={[-Math.PI / 2, 0, 0]}
@@ -58,27 +62,11 @@ export default function ThreeScene({ size }: { size: number }) {
             receiveShadow
           >
             <planeGeometry args={[gridSize * 3, gridSize * 3]} />
-            <shadowMaterial opacity={0.4} />
+            <shadowMaterial opacity={isNight ? 0.2 : 0.4} />
           </mesh>
-          <ambientLight intensity={0.5} />
-          <directionalLight
-            position={[gridSize * 0.8, gridSize * 2, gridSize * 0.8]}
-            intensity={1.5}
-            castShadow
-            shadow-mapSize-width={2048}
-            shadow-mapSize-height={2048}
-            shadow-camera-near={0.1}
-            shadow-camera-far={gridSize * 4}
-            shadow-camera-left={-gridSize * 1.2}
-            shadow-camera-right={gridSize * 1.2}
-            shadow-camera-top={gridSize * 1.2}
-            shadow-camera-bottom={-gridSize * 1.2}
-          />
-          <LocalEnvironment />
-          <CameraControls
-            ref={cameraControlsRef}
-            center={gridCenter}
-          />
+
+          <LocalEnvironment isNight={isNight} />
+          <CameraControls ref={cameraControlsRef} center={gridCenter} />
         </Suspense>
       </Canvas>
     </>

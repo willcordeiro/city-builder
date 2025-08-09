@@ -26,7 +26,7 @@ export function CityTile({ tile, position, selected, onSelectTile }: CityTilePro
         position={getAdjustedPosition(position, getAsset("grass").position)}
         onPointerDown={(e) => e.button === 0 && handlePointerDown(e)}
         onPointerMove={(e) => e.buttons === 1 && handlePointerDown(e)}
-        castShadow
+        castShadow={false}
         receiveShadow
       >
         <boxGeometry args={getAsset("grass").args} />

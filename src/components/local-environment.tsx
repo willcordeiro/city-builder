@@ -1,44 +1,66 @@
 "use client"
-
 import { Suspense } from "react"
 import { Environment, Sky } from "@react-three/drei"
+import * as THREE from "three"
 
 type LocalEnvironmentProps = {
-  /**
-   * Public path to your HDR. Place the file under public/hdri/.
-   * Example: public/hdri/potsdamer_platz_1k.hdr -> "/hdri/potsdamer_platz_1k.hdr"
-   */
   path?: string
-  /**
-   * Set as scene background.
-   */
   background?: boolean
-  /**
-   * Amount of blur applied to the environment.
-   */
   blur?: number
+  isNight?: boolean
 }
 
 export function LocalEnvironment({
   path = "/assets/textures/potsdamer_platz_1k.hdr",
   background = false,
   blur = 0.1,
+  isNight = false,
 }: LocalEnvironmentProps) {
-  // Suspense fallback renders a procedural sky while HDR loads or if it fails.
+  // Configurações diferentes para dia e noite
+  const daySettings = {
+    skyColor: '#87CEEB',
+    sunPosition: [10, 10, 10] as [number, number, number],
+    inclination: 0.47,
+    azimuth: 0.25,
+    mieCoefficient: 0.02,
+    rayleigh: 2,
+    turbidity: 8
+  }
+
+  const nightSettings = {
+    skyColor: '#0a0a2a',
+    sunPosition: [-10, -10, -10] as [number, number, number],
+    inclination: 0.6,
+    azimuth: 0.5,
+    mieCoefficient: 0.005,
+    rayleigh: 0.5,
+    turbidity: 2
+  }
+
+  const currentSettings = isNight ? nightSettings : daySettings
+
   return (
     <Suspense
       fallback={
         <Sky
-          sunPosition={[10, 10, 10]}
-          inclination={0.47}
-          azimuth={0.25}
-          mieCoefficient={0.02}
-          rayleigh={2}
-          turbidity={8}
+          {...currentSettings}
         />
       }
     >
-      <Environment files={path} background={background} blur={blur} />
+      <Environment 
+        files={isNight ? undefined : path} // Desativa HDR à noite
+        background={background}
+        blur={blur}
+      >
+        {/* Ambiente personalizado para noite */}
+        {isNight && (
+          <>
+            <color attach="background" args={[nightSettings.skyColor]} />
+            <fog attach="fog" args={[nightSettings.skyColor, 10, 30]} />
+            <ambientLight intensity={0.1} color="#0a0a2a" />
+          </>
+        )}
+      </Environment>
     </Suspense>
   )
 }

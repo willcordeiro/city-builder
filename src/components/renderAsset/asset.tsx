@@ -8,7 +8,6 @@ import { useSpring, a } from "@react-spring/three";
 import useCity from "@/hooks/useCity";
 import SmokeParticles from "../smokingParticles";
 
-
 interface AssetProps {
   asset: AssetType;
   position: [number, number, number];
@@ -21,22 +20,23 @@ function Asset({ asset, position, handlePointerDown }: AssetProps) {
   const y = position[2];
   const currentTile = getTile(x, y);
 
-
   const finalModel = useAsset(asset.id);
   const constructionModel = useAsset("constructionSmall");
 
-  const { activeModel, isLoading } = useMemo(() => ({
-    activeModel: currentTile?.loading ? constructionModel : finalModel,
-    isLoading: currentTile?.loading ?? false
-  }), [currentTile?.loading, constructionModel, finalModel]);
-
+  const { activeModel, isLoading } = useMemo(
+    () => ({
+      activeModel: currentTile?.loading ? constructionModel : finalModel,
+      isLoading: currentTile?.loading ?? false,
+    }),
+    [currentTile?.loading, constructionModel, finalModel]
+  );
 
   const { scale } = useSpring({
     from: { scale: [0, 0, 0] as [number, number, number] },
-    to: { 
-      scale: isLoading 
-        ? [0.2, 0.2, 0.2] as [number, number, number] 
-        : [0.25, 0.25, 0.25] as [number, number, number] 
+    to: {
+      scale: isLoading
+        ? ([0.2, 0.2, 0.2] as [number, number, number])
+        : ([0.25, 0.25, 0.25] as [number, number, number]),
     },
     config: {
       tension: isLoading ? 400 : 300,
@@ -62,24 +62,20 @@ function Asset({ asset, position, handlePointerDown }: AssetProps) {
       position={getAdjustedPosition(position, asset.position)}
       scale={scale as unknown as THREE.Vector3}
       onPointerDown={handlePointerDown}
-      castShadow
+      castShadow={false}
       receiveShadow
     >
-
-      <primitive 
-        object={activeModel} 
-        rotation={asset.rotation || [0, 0, 0]}
+      <pointLight
+        intensity={2}
+        color="#ffaa33"
+        position={[0, 1.5, 0]}
+        distance={3}
       />
-      
-     
+
+      <primitive object={activeModel} rotation={asset.rotation || [0, 0, 0]} />
+
       {isLoading && (
         <>
-          <pointLight
-            intensity={2}
-            color="#ffaa33"
-            position={[0, 1.5, 0]}
-            distance={3}
-          />
           <SmokeParticles visible={isLoading} />
         </>
       )}
