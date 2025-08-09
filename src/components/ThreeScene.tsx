@@ -12,7 +12,6 @@ import { Clouds } from "./Clouds";
 
 export default function ThreeScene({ size }: { size: number }) {
   const cameraControlsRef = useRef<CameraControlsHandle>(null);
-  const [isNight, setIsNight] = useState(false);
 
   const gridSize = size;
   const gridCenter = new THREE.Vector3(
@@ -22,9 +21,9 @@ export default function ThreeScene({ size }: { size: number }) {
   );
 
   const defaultFreeCameraPosition = new THREE.Vector3(
-    gridCenter.x + gridSize * 1.2,
-    gridCenter.y + gridSize * 1.5,
-    gridCenter.z + gridSize * 1.2
+    gridCenter.x + gridSize * 1,
+    gridCenter.y + gridSize * 0.5,
+    gridCenter.z + gridSize * 1
   );
 
   const resetCamera = () => {
@@ -46,14 +45,12 @@ export default function ThreeScene({ size }: { size: number }) {
           left: 0,
           width: "100vw",
           height: "100vh",
-          background: isNight
-            ? "linear-gradient(#0a0a2a, #000000)"
-            : "linear-gradient(#6B96C9, #3D5D8D)",
+          background: "linear-gradient(#6B96C9, #3D5D8D)",
         }}
       >
         <Suspense fallback={null}>
           <CityGrid />
-          <Clouds isNight={isNight} />
+          <Clouds isNight={false} />
           {/* <RainController/> */}
           <DayNightCycle speed={0.03} />
 
@@ -63,10 +60,10 @@ export default function ThreeScene({ size }: { size: number }) {
             receiveShadow
           >
             <planeGeometry args={[gridSize * 3, gridSize * 3]} />
-            <shadowMaterial opacity={isNight ? 0.2 : 0.4} />
+            <shadowMaterial opacity={0.4} />
           </mesh>
 
-          <LocalEnvironment isNight={isNight} />
+          <LocalEnvironment isNight={false} />
           <CameraControls ref={cameraControlsRef} center={gridCenter} />
         </Suspense>
       </Canvas>

@@ -31,7 +31,12 @@ const CameraControls = forwardRef<CameraControlsHandle, CameraControlsProps>(
     useImperativeHandle(ref, () => ({
       resetCamera: () => {
         if (!isIsometric) {
-          camera.position.set(center.x + 20, center.y + 30, center.z + 20);
+          const gridSize = 16;
+          camera.position.set(
+            center.x + gridSize * 1,
+            center.y + gridSize * 0.5,
+            center.z + gridSize * 1
+          );
           camera.lookAt(center);
         }
       },
