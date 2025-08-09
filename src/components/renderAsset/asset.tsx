@@ -1,10 +1,13 @@
+"use client";
 import { useAsset } from "@/hooks/useAssetManager";
-import useCity from "@/hooks/useCity";
 import { getAdjustedPosition } from "@/utils/positionUtils";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import * as THREE from "three";
 import { Asset as AssetType } from "@/utils/assets";
 import { useSpring, a } from "@react-spring/three";
+import useCity from "@/hooks/useCity";
+import SmokeParticles from "../smokingParticles";
+
 
 interface AssetProps {
   asset: AssetType;
@@ -13,48 +16,73 @@ interface AssetProps {
 }
 
 function Asset({ asset, position, handlePointerDown }: AssetProps) {
-  const { city, updateAssetLoading } = useCity();
-
+  const { getTile, updateAssetLoading } = useCity();
   const x = position[0];
   const y = position[2];
-  const currentAsset = city.data[x][y];
+  const currentTile = getTile(x, y);
 
-  const model = useAsset(asset.id);
-  const modelLoading = useAsset("constructionSmall");
+
+  const finalModel = useAsset(asset.id);
+  const constructionModel = useAsset("constructionSmall");
+
+  const { activeModel, isLoading } = useMemo(() => ({
+    activeModel: currentTile?.loading ? constructionModel : finalModel,
+    isLoading: currentTile?.loading ?? false
+  }), [currentTile?.loading, constructionModel, finalModel]);
+
+
+  const { scale } = useSpring({
+    from: { scale: [0, 0, 0] as [number, number, number] },
+    to: { 
+      scale: isLoading 
+        ? [0.2, 0.2, 0.2] as [number, number, number] 
+        : [0.25, 0.25, 0.25] as [number, number, number] 
+    },
+    config: {
+      tension: isLoading ? 400 : 300,
+      friction: isLoading ? 15 : 10,
+    },
+    delay: isLoading ? 0 : 100,
+  });
 
   useEffect(() => {
-    if (currentAsset?.loading) {
-   
-      const timeout = setTimeout(() => {
+    if (isLoading) {
+      const timer = setTimeout(() => {
         updateAssetLoading(x, y, false);
       }, 3000);
 
-      return () => clearTimeout(timeout);
+      return () => clearTimeout(timer);
     }
-  }, [currentAsset?.loading, x, y, updateAssetLoading]);
+  }, [isLoading, x, y, updateAssetLoading]);
 
-  const activeModel = currentAsset?.loading ? modelLoading : model;
-
-  const { scale } = useSpring({
-    scale:  [0.25, 0.25, 0.25],
-    from: currentAsset?.loading ? { scale: [0, 0, 0] } : undefined,
-    config: { tension: 300, friction: 10 },
-    delay: 50,
-  });
-
-  if (!currentAsset || !activeModel) return null;
-
-  
+  if (!currentTile || !activeModel) return null;
 
   return (
     <a.group
       position={getAdjustedPosition(position, asset.position)}
-      scale={scale.to((x, y, z) => [x, y, z])}
+      scale={scale as unknown as THREE.Vector3}
       onPointerDown={handlePointerDown}
       castShadow
       receiveShadow
     >
-      <primitive object={activeModel} />
+
+      <primitive 
+        object={activeModel} 
+        rotation={asset.rotation || [0, 0, 0]}
+      />
+      
+     
+      {isLoading && (
+        <>
+          <pointLight
+            intensity={2}
+            color="#ffaa33"
+            position={[0, 1.5, 0]}
+            distance={3}
+          />
+          <SmokeParticles visible={isLoading} />
+        </>
+      )}
     </a.group>
   );
 }

@@ -1,3 +1,4 @@
+import { useToolbar } from "@/hooks/useTollbar";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useRef, useEffect, forwardRef, useImperativeHandle } from "react";
 import * as THREE from "three";
@@ -8,11 +9,11 @@ export interface CameraControlsHandle {
 
 interface CameraControlsProps {
   center: THREE.Vector3;
-  isometricView: boolean;
 }
 
 const CameraControls = forwardRef<CameraControlsHandle, CameraControlsProps>(
-  ({ center, isometricView }, ref) => {
+  ({ center }, ref) => {
+    const { isIsometric } = useToolbar();
     const { camera, gl } = useThree();
     const keysPressed = useRef<{ [key: string]: boolean }>({});
     const moveSpeed = useRef(0.2);
@@ -30,7 +31,7 @@ const CameraControls = forwardRef<CameraControlsHandle, CameraControlsProps>(
     // Expor função para resetar a câmera
     useImperativeHandle(ref, () => ({
       resetCamera: () => {
-        if (!isometricView) {
+        if (!isIsometric) {
           camera.position.set(center.x + 20, center.y + 30, center.z + 20);
           camera.lookAt(center);
         }
@@ -38,7 +39,7 @@ const CameraControls = forwardRef<CameraControlsHandle, CameraControlsProps>(
     }));
 
     useEffect(() => {
-      if (isometricView) {
+      if (isIsometric) {
         previousCameraPosition.current.copy(camera.position);
         previousCameraQuaternion.current.copy(camera.quaternion);
         camera.position.set(center.x, center.y + 40, center.z);
@@ -47,7 +48,7 @@ const CameraControls = forwardRef<CameraControlsHandle, CameraControlsProps>(
         camera.position.copy(previousCameraPosition.current);
         camera.quaternion.copy(previousCameraQuaternion.current);
       }
-    }, [isometricView]);
+    }, [isIsometric]);
 
     useEffect(() => {
       target.current.copy(center);
@@ -87,7 +88,7 @@ const CameraControls = forwardRef<CameraControlsHandle, CameraControlsProps>(
       };
 
       const handleMouseMove = (e: MouseEvent) => {
-        if (isometricView) return;
+        if (isIsometric) return;
         if (!isDragging.current) return;
 
         const deltaX = e.clientX - previousMouse.current.x;
@@ -127,7 +128,7 @@ const CameraControls = forwardRef<CameraControlsHandle, CameraControlsProps>(
         window.removeEventListener("keyup", handleKeyUp);
         window.removeEventListener("wheel", handleMouseScroll);
       };
-    }, [camera, gl, isometricView]);
+    }, [camera, gl, isIsometric]);
 
     useFrame(() => {
       front
@@ -146,7 +147,7 @@ const CameraControls = forwardRef<CameraControlsHandle, CameraControlsProps>(
       direction.normalize();
 
       if (keysPressed.current["q"] || keysPressed.current["e"]) {
-        if (isometricView) return;
+        if (isIsometric) return;
         const offset = new THREE.Vector3()
           .copy(camera.position)
           .sub(target.current);

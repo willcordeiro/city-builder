@@ -17,7 +17,7 @@ function getTexture(path: string): THREE.Texture {
 }
 
 Object.values(assets)
-  .filter(({ filename }) => filename) // remove os vazios
+  .filter(({ filename }) => filename) //remove the empty assets
   .forEach(({ filename }) => {
     useGLTF.preload(`/assets/models/${filename}`);
   });

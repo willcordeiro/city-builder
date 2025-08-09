@@ -8,6 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useToolbar } from "@/hooks/useTollbar";
 import {
   Home,
   Store,
@@ -16,24 +17,17 @@ import {
   Trash2,
   Camera,
   CameraOff,
-  RefreshCcw, // ícone para resetar a câmera
+  RefreshCcw,
 } from "lucide-react";
 
 interface CityBuilderToolbarProps {
-  onSelect: (id?: string | undefined) => void;
-  selectedId?: string;
-  onToggleIsometric: () => void;
-  isIsometricActive: boolean;
   onResetCamera: () => void;
 }
 
-export function ToolbarSidebar({
-  onSelect,
-  selectedId,
-  onToggleIsometric,
-  isIsometricActive,
-  onResetCamera,
-}: CityBuilderToolbarProps) {
+export function ToolbarSidebar({ onResetCamera }: CityBuilderToolbarProps) {
+  const { selectedToolId, toggleToolSelect, isIsometric, toggleIsometricView } =
+    useToolbar();
+
   const toolbarItems = [
     {
       id: "residential",
@@ -77,9 +71,9 @@ export function ToolbarSidebar({
     },
     {
       id: "camera-toggle",
-      label: isIsometricActive ? "Visão Normal" : "Visão Isométrica",
-      icon: isIsometricActive ? CameraOff : Camera,
-      action: onToggleIsometric,
+      label: isIsometric ? "Visão Normal" : "Visão Isométrica",
+      icon: isIsometric ? CameraOff : Camera,
+      action: toggleIsometricView,
     },
     {
       id: "reset-camera",
@@ -93,8 +87,8 @@ export function ToolbarSidebar({
     <Card className="fixed bottom-4 left-1/2 -translate-x-1/2 p-3 z-10 flex flex-row gap-2 items-center shadow-lg">
       {toolbarItems.map((item) => {
         const isSelected = item.subOptions
-          ? item.subOptions.some((sub) => sub.id === selectedId)
-          : item.id === selectedId;
+          ? item.subOptions.some((sub) => sub.id === selectedToolId)
+          : item.id === selectedToolId;
 
         const buttonVariant =
           item.id === "bulldoze" && isSelected
@@ -108,7 +102,11 @@ export function ToolbarSidebar({
             <Button
               key={item.id}
               onClick={item.action}
-              variant={item.id === "camera-toggle" && isIsometricActive ? "default" : "outline"}
+              variant={
+                item.id === "camera-toggle" && isIsometric
+                  ? "default"
+                  : "outline"
+              }
               size="icon"
               className="flex flex-col h-auto w-auto p-3"
             >
@@ -119,7 +117,7 @@ export function ToolbarSidebar({
           return (
             <Button
               key={item.id}
-              onClick={() => onSelect(item.id)}
+              onClick={() => toggleToolSelect(item.id)}
               variant={buttonVariant}
               size="icon"
               className="flex flex-col h-auto w-auto p-3"
@@ -144,9 +142,9 @@ export function ToolbarSidebar({
               {item.subOptions.map((subOption) => (
                 <DropdownMenuItem
                   key={subOption.id}
-                  onClick={() => onSelect(subOption.id)}
+                  onClick={() => toggleToolSelect(subOption.id)}
                   className={
-                    selectedId === subOption.id
+                    selectedToolId === subOption.id
                       ? "bg-accent text-accent-foreground"
                       : ""
                   }

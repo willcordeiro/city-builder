@@ -10,10 +10,6 @@ import { LocalEnvironment } from "./local-environment";
 
 
 export default function ThreeScene({ size }: { size: number }) {
-  const [selectedToolId, setSelectedToolId] = useState<string | undefined>(
-    "residential"
-  );
-  const [isIsometric, setIsIsometric] = useState(false);
   const cameraControlsRef = useRef<CameraControlsHandle>(null); 
 
   const gridSize = size;
@@ -29,14 +25,6 @@ export default function ThreeScene({ size }: { size: number }) {
     gridCenter.z + gridSize * 1.2
   );
 
-  function handleToolSelect(id: string | undefined) {
-    setSelectedToolId(id);
-  }
-
-  const toggleIsometricView = () => {
-    setIsIsometric((prev) => !prev);
-  };
-
   const resetCamera = () => {
     cameraControlsRef.current?.resetCamera();
   };
@@ -44,10 +32,6 @@ export default function ThreeScene({ size }: { size: number }) {
   return (
     <>
       <ToolbarSidebar
-        onSelect={handleToolSelect}
-        selectedId={selectedToolId}
-        onToggleIsometric={toggleIsometricView}
-        isIsometricActive={isIsometric}
         onResetCamera={resetCamera}
       />
       <Canvas
@@ -66,7 +50,7 @@ export default function ThreeScene({ size }: { size: number }) {
         }}
       >
         <Suspense fallback={null}>
-          <CityGrid selectedToolId={selectedToolId} />
+          <CityGrid />
 
           <mesh
             rotation={[-Math.PI / 2, 0, 0]}
@@ -94,7 +78,6 @@ export default function ThreeScene({ size }: { size: number }) {
           <CameraControls
             ref={cameraControlsRef}
             center={gridCenter}
-            isometricView={isIsometric}
           />
         </Suspense>
       </Canvas>
