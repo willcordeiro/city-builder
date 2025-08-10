@@ -79,6 +79,7 @@ export function ToolbarSidebar({ onResetCamera }: CityBuilderToolbarProps) {
       label: "Estrada",
       icon: Route,
       color: "bg-gray-500 hover:bg-gray-600",
+      selectedColor: "bg-gray-700 hover:bg-gray-700",
     },
     {
       id: "bulldoze",
@@ -116,7 +117,6 @@ export function ToolbarSidebar({ onResetCamera }: CityBuilderToolbarProps) {
 
   return (
     <>
-      {/* Overlay escuro quando o painel estiver aberto */}
       {activeCategory && (
         <div
           className="fixed inset-0 bg-black/30 z-20"
@@ -124,7 +124,6 @@ export function ToolbarSidebar({ onResetCamera }: CityBuilderToolbarProps) {
         />
       )}
 
-      {/* Painel de seleção de construções */}
       {selectedCategory && (
         <Card className="fixed bottom-24 left-1/2 -translate-x-1/2 z-30 p-4 shadow-xl w-full max-w-4xl h-64 bg-gray-800 border-gray-700">
           <div className="flex justify-between items-center mb-3">
@@ -182,7 +181,6 @@ export function ToolbarSidebar({ onResetCamera }: CityBuilderToolbarProps) {
         </Card>
       )}
 
-      {/* Barra de ferramentas principal - Aumentada e estilizada */}
       <Card className="fixed bottom-4 left-1/2 -translate-x-1/2 z-10 p-3 shadow-lg flex flex-row gap-3 items-center bg-gray-800 border-gray-700 rounded-xl">
         {toolbarItems.map((item) => {
           const isSelected =
@@ -210,6 +208,8 @@ export function ToolbarSidebar({ onResetCamera }: CityBuilderToolbarProps) {
                   selectedToolId === item.id
                     ? item.id === "bulldoze"
                       ? "bg-red-600 hover:bg-red-700"
+                      : item.id === "road"
+                      ? "bg-gray-700 hover:bg-gray-700"
                       : item.color.replace("hover:", "").replace("bg-", "bg-")
                     : item.color
                 } text-white`}
