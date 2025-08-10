@@ -27,8 +27,8 @@ const buildingThumbnails = {
   residentialApartment: "/assets/toolbarImage/apartament.png",
 
   commercialSmall: "/assets/toolbarImage/comercialSmall.png",
-  commercialRestaurant: "/assets/toolbarImage/ComercialBig.png",
-  commercialOffice: "/assets/toolbarImage/ComercialTall.png",
+  commercialRestaurant: "/assets/toolbarImage/comercialBig.png",
+  commercialOffice: "/assets/toolbarImage/comercialTall.png",
 
   industrialHeavy: "/assets/toolbarImage/industrialHeavy.png",
   industrialLight: "/assets/toolbarImage/comercialLight.png",
