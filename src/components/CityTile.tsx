@@ -5,6 +5,7 @@ import { lightenColor, getColorForBuilding } from "@/utils/colorUtils";
 import { getAdjustedPosition } from "@/utils/positionUtils";
 import RenderAsset from "./renderAsset";
 import { RoadTile } from "./RoadTile";
+import { useToolbar } from "@/hooks/useTollbar";
 
 interface CityTileProps {
   tile: Tile;
@@ -19,10 +20,14 @@ export function CityTile({
   selected,
   onSelectTile,
 }: CityTileProps) {
+  const { selectedToolId } = useToolbar();
   function handlePointerDown(event: any) {
     event.stopPropagation();
 
-    if (event.button !== 2) {
+    if (event.button === 2) return;
+    console.log(tile.building?.id);
+
+    if (!tile.building || selectedToolId === "bulldoze") {
       onSelectTile(tile.x, tile.y);
     }
   }
