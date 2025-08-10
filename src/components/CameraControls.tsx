@@ -173,31 +173,6 @@ const CameraControls = forwardRef<CameraControlsHandle, CameraControlsProps>(
 
       direction.normalize();
 
-      if (keysPressed.current["q"] || keysPressed.current["e"]) {
-        if (isIsometric) return;
-
-        const forward = new THREE.Vector3(0, 0, -1).applyQuaternion(
-          camera.quaternion
-        );
-
-        const tempTarget = new THREE.Vector3()
-          .copy(camera.position)
-          .add(forward);
-
-        if (keysPressed.current["e"]) {
-          camera.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), -rotationSpeed);
-        }
-        if (keysPressed.current["q"]) {
-          camera.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), rotationSpeed);
-        }
-
-        const newForward = new THREE.Vector3(0, 0, -1).applyQuaternion(
-          camera.quaternion
-        );
-
-        camera.position.copy(tempTarget).sub(newForward);
-      }
-
       if (keysPressed.current["w"]) {
         moveSpeed.current = 0.08;
       } else {
