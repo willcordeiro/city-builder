@@ -27,6 +27,7 @@ const CameraControls = forwardRef<CameraControlsHandle, CameraControlsProps>(
     const previousMouse = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
     const rotationSpeed = 0.005;
     const target = useRef<THREE.Vector3>(center);
+    const raycaster = useRef(new THREE.Raycaster());
 
     useImperativeHandle(ref, () => ({
       resetCamera: () => {
@@ -38,6 +39,7 @@ const CameraControls = forwardRef<CameraControlsHandle, CameraControlsProps>(
             center.z + gridSize * 1
           );
           camera.lookAt(center);
+          target.current.copy(center);
         }
       },
     }));
@@ -48,6 +50,7 @@ const CameraControls = forwardRef<CameraControlsHandle, CameraControlsProps>(
         previousCameraQuaternion.current.copy(camera.quaternion);
         camera.position.set(center.x, center.y + 40, center.z);
         camera.lookAt(center);
+        target.current.copy(center);
       } else {
         camera.position.copy(previousCameraPosition.current);
         camera.quaternion.copy(previousCameraQuaternion.current);
@@ -57,6 +60,19 @@ const CameraControls = forwardRef<CameraControlsHandle, CameraControlsProps>(
     useEffect(() => {
       target.current.copy(center);
     }, [center]);
+
+    const getTargetFromCameraView = () => {
+      raycaster.current.setFromCamera(new THREE.Vector2(0, 0), camera);
+
+      const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+
+      const intersection = new THREE.Vector3();
+      raycaster.current.ray.intersectPlane(plane, intersection);
+
+      if (intersection) {
+        target.current.copy(intersection);
+      }
+    };
 
     useEffect(() => {
       const canvas = gl.domElement;
@@ -71,7 +87,7 @@ const CameraControls = forwardRef<CameraControlsHandle, CameraControlsProps>(
 
       const handleMouseScroll = (e: WheelEvent) => {
         e.preventDefault();
-        const delta = e.deltaY > 0 ? -2 : 2;
+        const delta = e.deltaY > 0 ? -0.5 : 0.5;
         camera.position.addScaledVector(
           camera.getWorldDirection(new THREE.Vector3()),
           delta
@@ -82,6 +98,10 @@ const CameraControls = forwardRef<CameraControlsHandle, CameraControlsProps>(
         if (e.button === 2) {
           isDragging.current = true;
           previousMouse.current = { x: e.clientX, y: e.clientY };
+
+          if (!isIsometric) {
+            getTargetFromCameraView();
+          }
         }
       };
 
@@ -135,6 +155,9 @@ const CameraControls = forwardRef<CameraControlsHandle, CameraControlsProps>(
     }, [camera, gl, isIsometric]);
 
     useFrame(() => {
+      const movementSpeed = 0.08;
+      const rotationSpeed = 0.02;
+
       front
         .set(0, 0, -1)
         .applyQuaternion(camera.quaternion)
@@ -152,23 +175,33 @@ const CameraControls = forwardRef<CameraControlsHandle, CameraControlsProps>(
 
       if (keysPressed.current["q"] || keysPressed.current["e"]) {
         if (isIsometric) return;
-        const offset = new THREE.Vector3()
+
+        const forward = new THREE.Vector3(0, 0, -1).applyQuaternion(
+          camera.quaternion
+        );
+
+        const tempTarget = new THREE.Vector3()
           .copy(camera.position)
-          .sub(target.current);
-        const spherical = new THREE.Spherical().setFromVector3(offset);
+          .add(forward);
 
-        if (keysPressed.current["e"]) spherical.theta += rotationSpeed * 3;
-        if (keysPressed.current["q"]) spherical.theta -= rotationSpeed * 3;
+        if (keysPressed.current["e"]) {
+          camera.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), -rotationSpeed);
+        }
+        if (keysPressed.current["q"]) {
+          camera.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), rotationSpeed);
+        }
 
-        offset.setFromSpherical(spherical);
-        camera.position.copy(target.current).add(offset);
-        camera.lookAt(target.current);
+        const newForward = new THREE.Vector3(0, 0, -1).applyQuaternion(
+          camera.quaternion
+        );
+
+        camera.position.copy(tempTarget).sub(newForward);
       }
 
       if (keysPressed.current["w"]) {
-        moveSpeed.current = Math.min(moveSpeed.current + 0.01, 1.0);
+        moveSpeed.current = 0.08;
       } else {
-        moveSpeed.current = 0.2;
+        moveSpeed.current = movementSpeed;
       }
 
       camera.position.add(direction.multiplyScalar(moveSpeed.current));

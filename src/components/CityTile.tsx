@@ -13,11 +13,18 @@ interface CityTileProps {
   onSelectTile: (x: number, y: number) => void;
 }
 
-export function CityTile({ tile, position, selected, onSelectTile }: CityTileProps) {
-
+export function CityTile({
+  tile,
+  position,
+  selected,
+  onSelectTile,
+}: CityTileProps) {
   function handlePointerDown(event: any) {
     event.stopPropagation();
-    onSelectTile(tile.x, tile.y);
+
+    if (event.button !== 2) {
+      onSelectTile(tile.x, tile.y);
+    }
   }
 
   return (
@@ -31,9 +38,10 @@ export function CityTile({ tile, position, selected, onSelectTile }: CityTilePro
       >
         <boxGeometry args={getAsset("grass").args} />
         <meshLambertMaterial
-          color={selected 
-            ? lightenColor(getColorForBuilding("grass")) 
-            : getColorForBuilding("grass")
+          color={
+            selected
+              ? lightenColor(getColorForBuilding("grass"))
+              : getColorForBuilding("grass")
           }
         />
       </mesh>
