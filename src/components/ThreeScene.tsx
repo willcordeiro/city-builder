@@ -52,7 +52,7 @@ export default function ThreeScene({ size }: { size: number }) {
           <CityGrid />
           <Clouds isNight={false} />
           {/* <RainController/> */}
-          <DayNightCycle speed={0.03} />
+          <DayNightCycle speed={0.000003} />
 
           <mesh
             rotation={[-Math.PI / 2, 0, 0]}
@@ -71,6 +71,9 @@ export default function ThreeScene({ size }: { size: number }) {
   );
 }
 
-//todo increase city cize with infinite map but limited
+//todo increase city cize with infinite map but limited and having levels of city terrain
 //todo toolbar like cities skylines with models
 //todo add more models for building
+//todo totate object
+//todo improve camera
+//todo right click placing building

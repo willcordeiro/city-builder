@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  MouseEventHandler,
-  ReactNode,
-  createContext,
-  useState,
-} from "react";
+import { MouseEventHandler, ReactNode, createContext, useState } from "react";
 
 interface ToolbarContextType {
   selectedToolId: string | undefined;
@@ -19,9 +14,7 @@ export const ToolbarContext = createContext<ToolbarContextType | undefined>(
 );
 
 export function ToolbarProvider({ children }: { children: ReactNode }) {
-  const [selectedToolId, setSelectedToolId] = useState<string | undefined>(
-    "residential"
-  );
+  const [selectedToolId, setSelectedToolId] = useState<string | undefined>("");
   const [isIsometric, setIsIsometric] = useState(false);
 
   function toggleToolSelect(id: string | undefined) {

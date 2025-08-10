@@ -10,11 +10,13 @@ function getTexture(path: string): THREE.Texture {
   if (!textureCache.has(path)) {
     const textureLoader = new THREE.TextureLoader();
     const texture = textureLoader.load(path);
+    texture.flipY = false; // Importante para Normal Maps
     textureCache.set(path, texture);
   }
   return textureCache.get(path)!;
 }
 
+// Pré-carrega modelos
 Object.values(assets)
   .filter(({ filename }) => filename)
   .forEach(({ filename }) => {
@@ -23,7 +25,6 @@ Object.values(assets)
 
 export function useAsset(name: keyof typeof assets, buildingId?: string) {
   const asset = assets[name] ?? null;
-
   const filename = asset?.filename ?? "";
   const scale = asset?.scale ?? 1;
   const defaultRotation = asset?.rotation ?? 0;
@@ -36,18 +37,17 @@ export function useAsset(name: keyof typeof assets, buildingId?: string) {
 
     const cloned = gltf.scene.clone();
 
-    const baseTexture = getTexture("/assets/textures/base.png");
-    const baseTextureRoads = getTexture("/assets/textures/final_output.png");
-    const specularTexture = getTexture("/assets/textures/specular.png");
+    // Texturas (substitua pelos caminhos corretos)
+    const baseColorTexture = getTexture("/assets/textures/base.png");
 
     cloned.traverse((obj: any) => {
       if (obj.isMesh && obj.material) {
-        obj.material = new THREE.MeshLambertMaterial({
-          map: buildingId === "road" ? baseTextureRoads : baseTexture,
-          specularMap: specularTexture,
+        obj.material = new THREE.MeshStandardMaterial({
+          map: baseColorTexture,
+          metalness: 1, // Define um valor fixo (0 = não metálico, 1 = metálico)
+          roughness: 1, // Define um valor fixo (0 = liso, 1 = rugoso)
+          emissive: 0x000000, // Sem brilho
         });
-        obj.castShadow = true;
-        obj.receiveShadow = true;
       }
     });
 
