@@ -71,9 +71,6 @@ export default function ThreeScene({ size }: { size: number }) {
   );
 }
 
-//todo increase city cize with infinite map but limited and having levels of city terrain
-//todo toolbar like cities skylines with models
+//todo increase city size with infinite map but limited and having levels of city terrain
 //todo add more models for building
-//todo totate object
-//todo improve camera
-//todo right click placing building
+//todo rotate buildings by user action
